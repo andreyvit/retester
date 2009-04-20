@@ -1,0 +1,9 @@
+%p
+  %a { :href => "test.php?id=new" }
+    Создать новый тест
+- foreach($tests as $test)
+  %p
+    %a{ :href => "test.php?id=$test->id" }
+      = $test->id
+      --
+      = $test->name
