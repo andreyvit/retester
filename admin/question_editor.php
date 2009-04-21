@@ -1,5 +1,5 @@
 <?php
-  include 'lib/prefix.inc.php';
+  include '../lib/common.inc.php';
   
   $id = $_REQUEST['question_id'];
   $is_new = ($id == 'new');

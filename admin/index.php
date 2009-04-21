@@ -1,5 +1,5 @@
 <?php
-  include 'lib/prefix.inc.php';
+  include '../lib/common.inc.php';
   $title = "Администрирование re:tester";
   
   $tests = query('Test', "SELECT id, name FROM tests ORDER BY name");
