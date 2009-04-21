@@ -5,12 +5,14 @@
   $is_new = ($id == 'new');
   if ($is_new) {
     $title = "Новый тест";
-    $test = new stdClass();
+    $test = new Test();
+    $questions = array();
   } else {
-    if (!($test = get("SELECT id, name FROM tests WHERE id = %s", $id)))
-      redirect("/", "Извините, такого теста не существует.");
+    if (!($test = get('Test', "SELECT id, name FROM tests WHERE id = %s", $id)))
+      redirect("/", "Извините, этот тест уже удален.");
     $title = "$test->name";
+    $questions = query('Question', "SELECT id, `order`, `text` FROM questions WHERE test_id = %s ORDER BY `order`", $test->id);
   }
   
-  render('test.haml', array('test' => $test));
+  render('test.haml', array('test' => $test, 'questions' => $questions));
 ?>

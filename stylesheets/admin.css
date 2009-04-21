@@ -1,0 +1,4 @@
+.question .text { cursor: pointer; text-decoration: underline; color: blue; }
+.order { display: none; }
+.handle { cursor: move; }
+ul.answers { list-style-type: none; }

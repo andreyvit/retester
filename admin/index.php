@@ -2,6 +2,6 @@
   include 'lib/prefix.inc.php';
   $title = "Администрирование re:tester";
   
-  $tests = query("SELECT id, name FROM tests ORDER BY created_at DESC");
+  $tests = query('Test', "SELECT id, name FROM tests ORDER BY name");
   render('list.haml', array('tests' => $tests));
 ?>

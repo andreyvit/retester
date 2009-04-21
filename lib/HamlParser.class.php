@@ -908,7 +908,7 @@ class HamlParser
 			$aAttr = array_merge($aAttr, $aArray);
 		foreach ($aAttr as $sName => $sValue)
 			if ($sValue)
-				echo " $sName=\"".htmlentities($sValue).'"';
+				echo " $sName=\"".htmlspecialchars($sValue).'"';
 	}
 	
 	/**

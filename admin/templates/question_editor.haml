@@ -1,0 +1,18 @@
+%form.question_editor{ :method => 'POST', :action => 'question_editor.php' }
+  %input{ :type => 'hidden', :name => 'question_id', :value => $question->id }
+  %input{ :type => 'hidden', :name => 'test_id', :value => $question->test_id }
+  %textarea{ :name => 'question_text', :rows => 4, :cols => 80 }= $question->text
+    
+  %ul.answers
+    - foreach($answers as $answer)
+      %li
+        %span.handle <img src="../images/move.png" width="15" height="15" />
+        %input{ :name => "ans_".$answer->id."_text", :size => 80, :value => $answer->text }
+        %input{ :name => "ans_".$answer->id."_order", :size => 2, :value => $answer->order }
+        %span.remove_answer <img src="../images/delete.gif" width="16" height="16" />
+        %span.correct
+          %input{ :name => "ans_".$answer->id."_correct", :id => "ans_".$answer->id."_correct", :type => 'checkbox', :checked => ($answer->is_correct ? 'checked' : false) }
+          %label{ :for => "ans_".$answer->id."_correct" } Правильный ответ
+  %input{ :type => "submit", :value => "Сохранить изменения в вопросе" }
+  или
+  %a{ :href => "#", :class => 'cancel_editor' } Отменить
