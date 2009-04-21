@@ -30,9 +30,38 @@ class Model {
     else
       $this->put();
   }
+  
+  function do_insert($table, $fields) {
+    $names = array();
+    $values = array();
+    $args = array();
+    foreach($fields as $field) {
+      $names[] = "`$field`";
+      $values[] = "'%s'";
+      $args[] = $this->$field;
+    }
+    $names = implode(", ", $names);
+    $values = implode(", ", $values);
+    array_unshift($args, "INSERT INTO `$table`($names) VALUES ($values)");
+    call_user_func_array("execute", $args);
+    $this->id = mysql_insert_id();
+  }
 }
 
 class Test extends Model {
+  function put() {
+    if ($this->is_saved())
+      ;
+    else
+      $this->do_insert("tests", array('name'));
+  }
+  
+  function delete() {
+    $questions = query('Question', "SELECT id FROM questions WHERE test_id = '%s'", $this->id);
+    foreach ($questions as $q)
+      $q->delete();
+    execute("DELETE FROM tests WHERE id = '%s'", $this->id);
+  }
 }
 
 class Question extends Model {  
@@ -43,6 +72,11 @@ class Question extends Model {
       execute("INSERT INTO questions(text, `order`, test_id) VALUES ('%s', '%s', '%s')", $this->text, $this->order, $this->test_id);
       $this->id = mysql_insert_id();
     }
+  }
+  
+  function delete() {
+    execute("DELETE FROM answers WHERE question_id = '%s'", $this->id);
+    execute("DELETE FROM questions WHERE id = '%s'", $this->id);
   }
 }
 

@@ -80,6 +80,14 @@ jQuery(function($) {
     });
     return false;
   });
+  $('#delete_test').click(function() {
+    if (!confirm("Отменить удаление будет невозможно. Удалить тест?"))
+      return false;
+    $.post("test-delete.php", $('#test_id').serialize(), function() {
+      window.location.href = './';
+    });
+    return false;
+  });
 });
 
 function closeEditor(editor) {

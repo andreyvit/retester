@@ -1,7 +1,11 @@
 %script{ :src => '../javascripts/test.js' }
 %input{ :type => 'hidden', :id => 'test_id', :name => 'test_id', :value => $test->id }
 %p
-  %a{ :href => "./" } Вернуться к списку тестов
+  %a{ :href => "./" } « Вернуться к списку тестов
+  %span /
+  %a{ :href => '#'}#delete_test
+    %img{ :src => "../images/delete.gif", :width => "16", :height => "16" }
+    = "Удалить тест «#{$test->name}»"
 #questions
   - foreach($questions as $question)
     !! question

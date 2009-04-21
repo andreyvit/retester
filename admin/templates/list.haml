@@ -1,6 +1,15 @@
+%script{ :src => '../javascripts/list.js' }
 %p
-  %a { :href => "test.php?id=new" }
+  %a#new_test{ :href => "#" }
     Создать новый тест
+#new_test_editor{ :style => 'display: none' }
+  %form{ :method => 'POST', :action => 'test-editor.php' }
+    %p
+      %label{ :for => 'name' } Название:
+      %input{ :id => 'name', :name => 'name', :size => 60 }
+    %p
+      %input{ :type => 'submit', :value => 'Создать тест' }
+    
 - foreach($tests as $test)
   %p
     %a{ :href => "test.php?id=$test->id" }
