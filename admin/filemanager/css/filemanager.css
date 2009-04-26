@@ -1,0 +1,192 @@
+/*********************************************************************************************************
+ This code is part of the FileManager software (www.gerd-tentler.de/tools/filemanager), copyright by
+ Gerd Tentler. Obtain permission before selling this code or hosting it on a commercial website or
+ redistributing it over the Internet or in any other medium. In all cases copyright must remain intact.
+*********************************************************************************************************/
+
+#fmLog1 { display: none; }
+
+/*********************************************************************************************************
+ general
+*********************************************************************************************************/
+HTML, BODY {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+/*********************************************************************************************************
+ content
+*********************************************************************************************************/
+.fmContent {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: normal;
+	color: #000000;
+}
+
+/*********************************************************************************************************
+ hyperlinks
+*********************************************************************************************************/
+.fmLink, .fmLink:active, .fmLink:visited {
+	color: #000000;
+	text-decoration: none;
+}
+.fmLink:hover {
+	text-decoration: underline;
+	color: #0000FF;
+}
+
+/*********************************************************************************************************
+ error and log messages
+*********************************************************************************************************/
+.fmError {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 2px;
+	text-align: center;
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #D00000;
+	color: #D00000;
+	background-color: #FFF0E0;
+}
+.fmLog {
+	padding: 4px;
+	margin-bottom: 14px;
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #708BD2;
+	background-color: #F0F0FF;
+}
+.fmLogTime {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	color: #708BD2;
+	text-align: right;
+}
+
+/*********************************************************************************************************
+ forms, fields and buttons
+*********************************************************************************************************/
+.fmForm {
+	margin: 0px;
+}
+.fmField {
+	font-family: Courier New, Courier;
+	font-size: 16px;
+	font-weight: normal;
+	border-width: 2px;
+	border-style: inset;
+	border-color: #FFFFFF;
+	background-color: #FFFFFF;
+}
+.fmButton {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 15px;
+	font-weight: bold;
+	margin-top: 4px;
+}
+
+/*********************************************************************************************************
+ table header cells
+*********************************************************************************************************/
+.fmTH1 {
+	cursor: default;
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 16px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #405BA2;
+}
+.fmTH2 {
+	cursor: default;
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000000;
+	background-color: #C0D0F0;
+}
+.fmTH3 {
+	cursor: default;
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	border-width: 1px;
+	border-style: outset;
+	border-color: #FFFFFF;
+	color: #FFFFFF;
+	background-color: #708BD2;
+}
+.fmTH4 {
+	cursor: pointer;
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	border-width: 1px;
+	border-style: outset;
+	border-color: #FFFFFF;
+	color: #FFFFFF;
+	background-color: #A0B0D0;
+}
+.fmTH5 {
+	cursor: pointer;
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 1px;
+	padding-right: 1px;
+	border-width: 1px;
+	border-style: inset;
+	border-color: #FFFFFF;
+	color: #FFFFFF;
+	background-color: #A0B0D0;
+}
+
+/*********************************************************************************************************
+ table data cells
+*********************************************************************************************************/
+.fmTD1 {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #FFFFFF;
+}
+.fmTD2 {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #E0F0FF;
+}
+.fmTD3 {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #708BD2;
+}
+.fmSearchResult {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 14px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #FFFFD0;
+}
+
+/*********************************************************************************************************
+ dialog boxes
+*********************************************************************************************************/
+.fmDialog {
+	position: absolute;
+	z-index: 69;
+	visibility: hidden;
+	border-width: 1px;
+	border-style: outset;
+	border-color: #FFFFFF;
+}
