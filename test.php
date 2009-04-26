@@ -76,13 +76,13 @@ if ($_POST) {
   
   $question = get('Question', "SELECT `id`, `order` FROM questions WHERE `id` = %d AND `test_id` = %d", $RES->question_id, $test->id);
   if ($question) {
-    $answer = get('Answer', "SELECT `id`, `order`, `is_correct` FROM answers WHERE `id`=%d AND `question_id`=%d", $answer_id, $question->id);
+    $answer = get('Answer', "SELECT `id`, `order`, `points` FROM answers WHERE `id`=%d AND `question_id`=%d", $answer_id, $question->id);
     if ($answer) {
       $a = new QuestionResult;
       $a->question_id = $question->id;
       $a->question_ord = $question->order;
       $a->ord = $answer->order;
-      $a->points = ($answer->is_correct ? 1 : 0);
+      $a->points = $answer->points;
       $RES->answers[] = $a;
     }
   }

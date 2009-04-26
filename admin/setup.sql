@@ -5,7 +5,10 @@ use retester;
 create table tests (
   id int auto_increment not null primary key,
   name varchar(255) not null,
-  created_at timestamp not null default current_timestamp
+  created_at timestamp not null default current_timestamp,
+  design_file varchar(255),
+  handler_file varchar(255),
+  finish_file varchar(255)
 );
 
 create table questions (
@@ -13,7 +16,8 @@ create table questions (
   test_id int not null,
   created_at timestamp not null default current_timestamp,
   `order` int not null,
-  `text` longtext not null default ""
+  `text` longtext not null default "",
+  image_file varchar(255)
 );
 
 create table answers (
@@ -21,10 +25,11 @@ create table answers (
   question_id int not null,
   `order` int not null,
   `text` longtext not null default "",
-  is_correct tinyint(1) not null default 0
+  points int not null default 0,
+  image_file varchar(255)
 );
 
-insert into tests(name) values ("IQ test");
+insert into tests(name) values ("IQ-тест");
 set @test_id = last_insert_id();
 
 insert into questions(test_id, `order`, text) values (
@@ -32,11 +37,22 @@ insert into questions(test_id, `order`, text) values (
 );
 set @question_id = last_insert_id();
 
-insert into answers(question_id, `order`, `text`, is_correct) values
+insert into answers(question_id, `order`, `text`, points) values
 (@question_id, 1, "Журавль", 0),
 (@question_id, 2, "Аист", 1),
 (@question_id, 3, "Страус", 0),
 (@question_id, 4, "Цапля", 0);
+
+insert into questions(test_id, `order`, text) values (
+  @test_id, 1, "Чью мать обещал показать американцам Хрущев?"
+);
+set @question_id = last_insert_id();
+
+insert into answers(question_id, `order`, `text`, points) values
+(@question_id, 1, "Кузькину", 0),
+(@question_id, 2, "Чертову", 1),
+(@question_id, 3, "Свою", 0),
+(@question_id, 4, "Микояна", 0);
 
 insert into tests(name) values ("Ваш психологический тип");
 set @test_id = last_insert_id();

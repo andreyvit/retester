@@ -44,9 +44,9 @@ class Question extends Model {
 class Answer extends Model {
   function put() {
     if ($this->is_saved())
-      execute("UPDATE `answers` SET `text`='%s', `order`='%s', `is_correct`='%s' WHERE id=%s", $this->text, $this->order, $this->is_correct, $this->id);
+      execute("UPDATE `answers` SET `text`='%s', `order`='%s', `points`='%s' WHERE id=%s", $this->text, $this->order, $this->points, $this->id);
     else {
-      execute("INSERT INTO `answers` (`text`, `order`, `question_id`, `is_correct`) VALUES ('%s', '%s', '%s', '%s')", $this->text, $this->order, $this->question_id, $this->is_correct);
+      execute("INSERT INTO `answers` (`text`, `order`, `question_id`, `points`) VALUES ('%s', '%s', '%s', '%s')", $this->text, $this->order, $this->question_id, $this->points);
       $this->id = mysql_insert_id();
     }
   }

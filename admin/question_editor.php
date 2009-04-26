@@ -38,7 +38,7 @@
         $answer->id = $aid;
       foreach($answer_data as $k => $v)
         $answer->$k = $v;
-      $answer->is_correct = (isset($answer->correct) && $answer->correct ? 1 : 0);
+      $answer->points = intval($answer->points);
       $answers[] = $answer;
     }
     // var_dump($answers);
@@ -64,7 +64,7 @@
     if (!($question = get('Question', "SELECT id, `order`, `text` FROM questions WHERE id = %s", $id)))
       redirect("/", "Извините, этот вопрос уже удален.");
     $title = "$question->name";
-    $answers = query('Answer', "SELECT id, `order`, `text`, `is_correct` FROM answers WHERE question_id = %s ORDER BY `order`", $question->id);
+    $answers = query('Answer', "SELECT id, `order`, `text`, `points` FROM answers WHERE question_id = %s ORDER BY `order`", $question->id);
   }
   $max_answer_order = 0;
   foreach ($answers as $answer)
