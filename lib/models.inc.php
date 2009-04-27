@@ -3,7 +3,7 @@
 class Test extends Model {
   
   var $table_name = 'tests';
-  var $id, $name, $design_file, $handler_file;
+  var $id, $name, $design_file, $handler_file, $finisher_file;
   
   function delete_children() {
     $questions = query('Question', "SELECT id FROM questions WHERE test_id = '%s'", $this->id);
@@ -11,12 +11,16 @@ class Test extends Model {
       $q->delete();
   }
   
-  function handler_file() {
-    return 'handlers/handler.inc.php';
+  function design_file() {
+    return "data/designs/$this->design_file";
   }
   
-  function finish_file() {
-    return 'handlers/finished.inc.php';
+  function handler_file() {
+    return "data/handlers/$this->handler_file";
+  }
+  
+  function finisher_file() {
+    return "data/finishers/$this->finisher_file";
   }
   
 }

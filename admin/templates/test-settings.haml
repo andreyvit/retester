@@ -13,9 +13,21 @@
             .group
               %label{ :for=>'design_file', :class=>'label' } Дизайн
               %select{:id=>'design_file', :name=>'design_file' }
-                %option file1.php
-                %option file2.php
-              / %span.description PHP-файл, отображающий вопросы; закачивайте на вкладке «файлы».
+                %option{ :value=>'none', :selected=>('' == $test->design_file ? 'selected':'') } (не указан)
+                - foreach($design_files as $file)
+                  %option{ :value=>$file, :selected=>($file == $test->design_file ? 'selected':'') }= $file
+            .group
+              %label{ :for=>'handler_file', :class=>'label' } Скрипт, определяющий следующий вопрос
+              %select{:id=>'handler_file', :name=>'handler_file' }
+                %option{ :value=>'none', :selected=>('' == $test->design_file ? 'selected':'') } (не указан)
+                - foreach($handler_files as $file)
+                  %option{ :value=>$file, :selected=>($file == $test->handler_file ? 'selected':'') }= $file
+            .group
+              %label{ :for=>'finisher_file', :class=>'label' } Завершающий скрипт
+              %select{:id=>'finisher_file', :name=>'finisher_file' }
+                %option{ :value=>'none', :selected=>('' == $test->design_file ? 'selected':'') } (не указан)
+                - foreach($finisher_files as $file)
+                  %option{ :value=>$file, :selected=>($file == $test->finisher_file ? 'selected':'') }= $file
         .clear
         .group.navform
           %input{ :type=>'submit', :class=>'button', :value => 'Сохранить изменения' }

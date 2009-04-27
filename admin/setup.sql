@@ -8,7 +8,7 @@ create table tests (
   created_at timestamp not null default current_timestamp,
   design_file varchar(255),
   handler_file varchar(255),
-  finish_file varchar(255)
+  finisher_file varchar(255)
 );
 
 create table questions (
@@ -29,7 +29,7 @@ create table answers (
   image_file varchar(255)
 );
 
-insert into tests(name) values ("IQ-тест");
+insert into tests(name, design_file, handler_file, finisher_file) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'stupid_points_printer.php');
 set @test_id = last_insert_id();
 
 insert into questions(test_id, `order`, text) values (
@@ -44,7 +44,7 @@ insert into answers(question_id, `order`, `text`, points) values
 (@question_id, 4, "Цапля", 0);
 
 insert into questions(test_id, `order`, text) values (
-  @test_id, 1, "Чью мать обещал показать американцам Хрущев?"
+  @test_id, 2, "Чью мать обещал показать американцам Хрущев?"
 );
 set @question_id = last_insert_id();
 
@@ -53,6 +53,16 @@ insert into answers(question_id, `order`, `text`, points) values
 (@question_id, 2, "Чертову", 1),
 (@question_id, 3, "Свою", 0),
 (@question_id, 4, "Микояна", 0);
+
+insert into questions(test_id, `order`, text) values (
+  @test_id, 3, "Важнейшим из веществ для нас является…"
+);
+set @question_id = last_insert_id();
+
+insert into answers(question_id, `order`, `text`, points) values
+(@question_id, 1, "C2H5OH", 2),
+(@question_id, 2, "CO", -1),
+(@question_id, 3, "CO2", 0);
 
 insert into tests(name) values ("Ваш психологический тип");
 set @test_id = last_insert_id();

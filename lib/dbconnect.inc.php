@@ -141,6 +141,7 @@ class Model {
           $field = false;
       $fields = array_filter($fields);
     }
+    unset($field);
     $sets = array();
     $args = array();
     foreach($fields as $field) {

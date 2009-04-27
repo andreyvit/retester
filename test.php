@@ -5,7 +5,7 @@ $test_id = intval($_GET['test_id']);
 if ($test_id == 0)
   die("invalid test_id");
   
-$test = get('Test', "SELECT id, name FROM tests WHERE `id` = %d", $test_id);
+$test = get('Test', "SELECT id, name, design_file, handler_file, finisher_file FROM tests WHERE `id` = %d", $test_id);
 if (!$test) {
   include('templates/test_no_longer_exists.inc.php');
   exit;
@@ -47,7 +47,7 @@ function run_handler(&$RES, $test) {
   }
   if ($question) {
     $RES->question_id = $question->id;
-    $RES->question_ord = $question->ord;
+    $RES->question_ord = $question->order;
     $RES->question_no++;
     return $question;
   }
@@ -113,7 +113,7 @@ if (!isset($RES->question_no)) {
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
   $question = run_handler($RES, $test);
 } else if ($RES->finished) {
-  include($test->finish_file());
+  include($test->finisher_file());
   exit;
 } else {
   // we always pick a question by id in GET request, so that pressing F5 will render the same
@@ -123,6 +123,6 @@ if (!isset($RES->question_no)) {
 
 $answers = query('Answer', "SELECT `id`, `text`, `order` FROM answers WHERE `question_id` = %d ORDER BY `order`", $question->id);
 
-include('templates/question.inc.php');
+include($test->design_file());
 
 ?>

@@ -1,6 +1,12 @@
 %script{ :src => '../javascripts/list.js' }
 .block
   .content
-    %h2.title Управление файлами
+    %h2.title Дизайны
     .inner
-      = $file_manager
+      = $designs_fm
+    %h2.title Скрипты выбора следующего вопроса
+    .inner
+      = $handlers_fm
+    %h2.title Скрипты окончания тестов
+    .inner
+      = $finishers_fm

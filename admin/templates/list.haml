@@ -22,6 +22,8 @@
                       (безымянный)
                 %td= $test->question_count
                 %td.last
+                  %a{ :href=>"../test.php?test_id=$test->id" } пройти тест
+                  &nbsp;&nbsp;
                   - $func = "return deleteTest(".$test->id.", '".htmlspecialchars(addslashes($test->name))."')";
                   %a{ :href=>"#", :onclick=>$func }
                     %img{ :src => "../images/delete.gif", :width => "16", :height => "16", :title=>"Удалить «".htmlspecialchars($test->name)."»" }
