@@ -1,17 +1,40 @@
 %script{ :src => '../javascripts/list.js' }
-%p
-  %a#new_test{ :href => "#" }
-    Создать новый тест
-#new_test_editor{ :style => 'display: none' }
-  %form{ :method => 'POST', :action => 'test-editor.php' }
-    %p
-      %label{ :for => 'name' } Название:
-      %input{ :id => 'name', :name => 'name', :size => 60 }
-    %p
-      %input{ :type => 'submit', :value => 'Создать тест' }
+.block
+  .content
+    %h2.title Выбор текущего теста
+    .inner
+      %form{ :method => 'POST', :action => 'test-editor.php' }
+        %table.table
+          %tr
+            %th.first &nbsp;
+            %th Название
+            %th Вопросов
+            %th.last &nbsp;
+            - foreach($tests as $test)
+              %tr[$test]
+                %td.first
+                  %input{ :type=>"radio", :id=>"active_test_$test->id", :name=>"active_test", :value=>"$test->id", :checked=>($test->id == $active_test_id ? "checked" : ""), :onclick=>"window.location.href='test.php?test_id=$test->id'" }
+                %td
+                  %label{ :for=>"active_test_$test->id" }
+                    - if($test->name)
+                      = htmlspecialchars($test->name)
+                    - if(!$test->name)
+                      (безымянный)
+                %td= $test->question_count
+                %td.last
+                  - $func = "return deleteTest(".$test->id.", '".htmlspecialchars(addslashes($test->name))."')";
+                  %a{ :href=>"#", :onclick=>$func }
+                    %img{ :src => "../images/delete.gif", :width => "16", :height => "16", :title=>"Удалить «".htmlspecialchars($test->name)."»" }
+            %tr#new_test_editor
+              / { :style => 'display: none' }
+              %td &nbsp;
+              %td
+                %input{ :id => 'name', :name => 'name', :size => 60 }
+              %td.last{ :colspan=>2 }
+                %input{ :type => 'submit', :value => 'Создать тест' }
+      / .actions-bar
+      /   .actions
+      /     %input{ :type=>'submit', :class=>'button', :value=>'Создать новый тест' }
+      /   .clear
+      
     
-- foreach($tests as $test)
-  %p
-    %a{ :href => "test.php?id=$test->id" }
-      = $test->name
-= $file_manager

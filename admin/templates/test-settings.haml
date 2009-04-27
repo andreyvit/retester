@@ -1,0 +1,21 @@
+/ %script{ :src => '../javascripts/test.js' }
+.block
+  .content
+    %h2.title Настройки теста
+    .inner
+      %form{ :method => 'POST', :action => "test-settings.php?test_id=$test->id", :class => 'form' }
+        .columns
+          .column.left
+            .group
+              %label{ :for=>'name', :class=>'label' } Название
+              %input{ :type=>'text', :class=>'text_field', :id=>'name', :name=>'name', :value=>htmlspecialchars($test->name) }
+              %span.description Напр.: «IQ-тест»
+            .group
+              %label{ :for=>'design_file', :class=>'label' } Дизайн
+              %select{:id=>'design_file', :name=>'design_file' }
+                %option file1.php
+                %option file2.php
+              / %span.description PHP-файл, отображающий вопросы; закачивайте на вкладке «файлы».
+        .clear
+        .group.navform
+          %input{ :type=>'submit', :class=>'button', :value => 'Сохранить изменения' }

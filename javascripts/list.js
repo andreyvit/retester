@@ -14,6 +14,13 @@ jQuery(function($) {
     return false;
   });
 });
+
+function deleteTest(testId, testName) {
+  if(!confirm('Вы уверены, что хотите удалить «' + testName + '»?')) return false;
+  $.post('test-delete.php', {'test_id': testId}, function() {
+    $('#test_'+testId).fadeOut('slow');
+  });
+}
   
 function testCreated(testId) {
   window.location.href = 'test.php?id=' + testId;

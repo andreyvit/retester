@@ -48,18 +48,17 @@ jQuery(function($) {
       return false;
     var qid = this.id.split("_")[1];
     var test_id = $('#test_id').val();
-    var html = "<p style='display: none' class='editor' id='" + editorId + "'></p>";
-    $(this).after(html);
-    $("#" + editorId).load("question_editor.php?test_id=" + test_id + "&question_id=" + qid, {}, function() {
-      $("#" + editorId).slideDown("fast");
-    });
+    var that = this;
+    $.get("question_editor.php?test_id=" + test_id + "&question_id=" + qid, {}, function(html) {
+      $(that).after(html);
+      $('.question_editor', $("#" + editorId)).submit(function() {
+        var data = $(this).serialize();
+        $.post("question_editor.php", data, {}, "script");
+        return false;
+      });
+    }, 'html');
   });
-  
-  $('form.question_editor').live('submit', function() {
-    var data = $(this).serialize();
-    $.post("question_editor.php?editor_id=" + this.parentNode.id, data, {}, "script");
-    return false;
-  });
+  $('#new_question')
   
   $('.cancel_editor').live('click', function() {
     closeEditor($(this).closest('.editor'));
@@ -74,6 +73,8 @@ jQuery(function($) {
   });
   $('.remove_question').live('click', function() {
     var q = $(this).closest('.question');
+    if (!confirm("Удалить вопрос «"+$('span.text', q).text()+"»?"))
+      return false;
     var id = q.attr('id').split('_')[1];
     $.post('delete-question.php', {'question_id': id}, function() {
       q.fadeOut("slow");
@@ -91,17 +92,19 @@ jQuery(function($) {
 });
 
 function closeEditor(editor) {
-  $(editor).slideUp("fast", removeFromDom);
+  $('.question_editor', $(editor)).slideUp("fast", function() {
+    $(editor).remove();
+  });
 }
 
-function questionNotFound(editor_id, question_id) {
+function questionNotFound(question_id) {
   alert('Извините, этот вопрос уже удален.');
-  closeEditor($('#' + editor_id));
+  closeEditor($('.editor'));
   $('question_' + question_id).fadeOut();
 }
 
-function questionSaved(editor_id, question_id, inserted) {
-  closeEditor($('#' + editor_id));
+function questionSaved(question_id, inserted) {
+  closeEditor($('.editor'));
   $.get('question.php?question_id=' + question_id, {}, function(text) {
     if (inserted) {
       $('#question_new').before(text);

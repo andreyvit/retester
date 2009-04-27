@@ -37,7 +37,7 @@ $fmView = "details";
 $maskHeight = 400;
 
 // log window height (pixels; 0 = don't view log)
-$logHeight = 100;
+$logHeight = 0;
 
 // max. width of preview thumbnails (pixels)
 $thumbMaxWidth = 200;

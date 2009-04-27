@@ -1,13 +1,22 @@
 %script{ :src => '../javascripts/test.js' }
 %input{ :type => 'hidden', :id => 'test_id', :name => 'test_id', :value => $test->id }
-%p
-  %a{ :href => "./" } « Вернуться к списку тестов
-  %span /
-  %a{ :href => '#'}#delete_test
-    %img{ :src => "../images/delete.gif", :width => "16", :height => "16" }
-    = "Удалить тест «#{$test->name}»"
-#questions
-  - foreach($questions as $question)
-    !! question
-%p{ :class => 'question', :id => 'question_new' }#question_new
-  %span.text Добавить новый вопрос
+.block
+  .content
+    %h2.title Вопросы
+    .inner
+      %form{ :method => 'POST', :action => 'question.php' }
+        %table.table
+          %tbody#questions
+            %tr
+              %th.first &nbsp;
+              %th Текст вопроса
+              %th Ответов
+              %th.last &nbsp;
+            - foreach($questions as $question)
+              !! question
+            %tr.question#question_new
+              %td
+              %td
+                %span.text Добавить вопрос
+              %td
+              %td

@@ -5,7 +5,6 @@
   $is_new = ($id == 'new');
   
   if ($_POST) {
-    $editor_id = $_REQUEST['editor_id'];
     if ($is_new) {
       $question = new Question();
       $question->test_id = $_REQUEST['test_id'];
@@ -16,7 +15,7 @@
       $answers = array();
     } else {
       if (!($question = get('Question', "SELECT id, `order`, `text` FROM questions WHERE id = %s", $id)))
-        jsdie('questionNotFound', $editor_id, $id);
+        jsdie('questionNotFound', $id);
     }
     $question->text = trim($_REQUEST['question_text']);
       
@@ -51,7 +50,7 @@
       $answer->question_id = $question->id;
       $answer->put_or_delete();
     }
-    jsdie("questionSaved", $editor_id, $question->id, $is_new);
+    jsdie("questionSaved", $question->id, $is_new);
   }
   
   if ($is_new) {
@@ -69,7 +68,8 @@
   $max_answer_order = 0;
   foreach ($answers as $answer)
     $max_answer_order = max($max_answer_order, $answer->order);
-  for ($i = 1; $i <= 3; $i++) {
+  $to_add = max(3, 5-count($answers));
+  for ($i = 1; $i <= $to_add; $i++) {
     $answer = new Answer();
     $answer->order = $max_answer_order + $i;
     $answer->id = "new".$i;

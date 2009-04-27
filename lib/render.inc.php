@@ -22,6 +22,8 @@ function render($template, $data) {
   $flash = $_SESSION['flash'];
   $_SESSION['flash'] = '';
   $content = render_partial($template, $data);
+  foreach($data as $k => $v)
+    $$k = $v;
   include 'templates/layout.inc.php';
 }
 
