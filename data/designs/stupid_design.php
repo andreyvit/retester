@@ -23,6 +23,9 @@
   <p>
     <?= htmlspecialchars($question->text) ?>
   </p>
+  <? if($question->image_file): ?>
+  <p><img src="<?= htmlspecialchars($question->image_path()) ?>"></p>
+  <? endif; ?>
   
   <div>
     <? foreach($answers as $answer): ?>
@@ -30,6 +33,9 @@
         <input type="radio" id="answer_<?= $answer->id ?>" name="answer" value="<?= $answer->id ?>" />
         <label for="answer_<?= $answer->id ?>">
           <?= htmlspecialchars($answer->text) ?>
+          <? if($answer->image_file): ?>
+          <p><img src="<?= htmlspecialchars($answer->image_path()) ?>"></p>
+          <? endif; ?>
         </label>
       </p>
     <? endforeach; ?>
