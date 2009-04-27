@@ -9,7 +9,7 @@ jQuery(function($) {
     return false;
   });
   
-  $('#new_test_editor form').submit(function() {
+  $('form#new_test_form').submit(function() {
     $.post('test-editor.php', $(this).serialize(), {}, "script");
     return false;
   });
@@ -23,5 +23,5 @@ function deleteTest(testId, testName) {
 }
   
 function testCreated(testId) {
-  window.location.href = 'test.php?id=' + testId;
+  window.location.href = 'test.php?test_id=' + testId;
 }
