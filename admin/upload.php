@@ -14,4 +14,17 @@ if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
   // Otherwise onSubmit event will not be fired
   echo "error";
 }
+
+ob_start();
+if($dh = opendir($uploaddir)) {
+  while(false !== ($file = readdir($dh))) {
+    if( $file == '.' || $file == '..')
+        continue;
+    $path = $uploaddir . '/' . $file;
+    if(is_file($path) && time()-filemtime($path) > 60*60*24)
+      unlink($path);
+  }
+  closedir($dh);
+}
+ob_end_clean();
 ?>
