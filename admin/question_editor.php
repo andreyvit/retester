@@ -14,15 +14,15 @@
       $question->order = $max_order + 1;
       $answers = array();
     } else {
-      if (!($question = get('Question', "SELECT id, `order`, `text` FROM questions WHERE id = %s", $id)))
+      if (!($question = get('Question', "WHERE id = %s", $id)))
         jsdie('questionNotFound', $id);
     }
-    $question->text = trim($_REQUEST['question_text']);
+    $question->assign('question_', array('text', 'image_code'));
       
     $answers_data = array();
     foreach($_POST as $k=>$v) {
       if (0 === strpos($k, "ans_")) {
-        $arr = explode('_', $k);
+        $arr = explode('_', $k, 3);
         $aid = $arr[1];
         if (!isset($answers_data[$aid]))
           $answers_data[$aid] = array();
@@ -30,9 +30,12 @@
       }
     }
     
+    $answers_by_id = query_indexed('Answer', 'id', "WHERE question_id=%d", $question->id);
     $answers = array();
     foreach($answers_data as $aid => $answer_data) {
-      $answer = new Answer();
+      $answer = $answers_by_id[intval($aid)];
+      if (!$answer)
+        $answer = new Answer();
       if (0 !== strpos($aid, "new"))
         $answer->id = $aid;
       foreach($answer_data as $k => $v)
@@ -40,15 +43,18 @@
       $answer->points = intval($answer->points);
       $answers[] = $answer;
     }
-    // var_dump($answers);
     
-    // validate
-
     $question->put();
       
     foreach ($answers as $answer) {
       $answer->question_id = $question->id;
+      $answer->test_id = $question->test_id;
+      $answer->normalize();
       $answer->put_or_delete();
+      if (!$answer->is_empty()) {
+        $answer->normalize();
+        $answer->put();
+      }
     }
     jsdie("questionSaved", $question->id, $is_new);
   }
@@ -60,10 +66,10 @@
     $question->test_id = $_REQUEST['test_id'];
     $answers = array();
   } else {
-    if (!($question = get('Question', "SELECT id, `order`, `text` FROM questions WHERE id = %s", $id)))
+    if (!($question = get('Question', "WHERE id = %s", $id)))
       redirect("/", "Извините, этот вопрос уже удален.");
     $title = "$question->name";
-    $answers = query('Answer', "SELECT id, `order`, `text`, `points` FROM answers WHERE question_id = %s ORDER BY `order`", $question->id);
+    $answers = query('Answer', "WHERE question_id = %s ORDER BY `order`", $question->id);
   }
   $max_answer_order = 0;
   foreach ($answers as $answer)

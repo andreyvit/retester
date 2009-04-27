@@ -1,5 +1,7 @@
 <?php
 
+define('IMAGE_UPLOAD_BASE_DIR', '../data/images');
+
 class Test extends Model {
   
   var $table_name = 'tests';
@@ -28,11 +30,30 @@ class Test extends Model {
 class Question extends Model {
   
   var $table_name = 'questions';
-  var $id, $test_id, $text, $order;
+  var $id, $test_id, $text, $order, $image_file;
   
   function delete_children() {
     execute("DELETE FROM answers WHERE question_id = '%s'", $this->id);
     execute("DELETE FROM questions WHERE id = '%s'", $this->id);
+  }
+  
+  function normalize_text($v) {
+    return trim($v);
+  }
+  
+  function wakeup() {
+    $this->image_code = empty($this->image_file) ? '' : 'keep';
+  }
+  
+  function normalize() {
+    $this->normalize_file_field('image_code', 'image_file', "test_{$this->test_id}/q_{$this->id}", IMAGE_UPLOAD_BASE_DIR);
+  }
+  
+  function image_file_or_placeholder() {
+    if (empty($this->image_file))
+      return "../images/placeholder.png";
+    else
+      return "../data/images/{$this->image_file}";
   }
   
 }
@@ -40,10 +61,29 @@ class Question extends Model {
 class Answer extends Model {
   
   var $table_name = 'answers';
-  var $id, $question_id, $text, $order, $points;
+  var $id, $question_id, $text, $order, $points, $image_file;
+  
+  function wakeup() {
+    $this->image_code = empty($this->image_file) ? '' : 'keep';
+  }
   
   function is_empty() {
-    return !$this->text;
+    return empty($this->text) && empty($this->image_code);
+  }
+  
+  function normalize() {
+    $this->normalize_file_field('image_code', 'image_file', "test_{$this->test_id}/q_{$this->question_id}_a_{$this->id}", IMAGE_UPLOAD_BASE_DIR);
+  }
+  
+  function image_file_or_placeholder() {
+    if (empty($this->image_file))
+      return "../images/placeholder.png";
+    else
+      return "../data/images/{$this->image_file}";
+  }
+
+  function image_code() {
+    return empty($this->image_file) ? '' : 'keep';
   }
 
 }

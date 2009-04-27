@@ -10,7 +10,7 @@ jQuery(function($) {
         handle: '.handle',
         update: function() {
             $(this).find('li').each(function(i) {
-                if ($(this).find('input[name$=text]').val()) {
+                if ($(this).find('input[name$=text]').val() || $(this).find('input[name$=code]').val()) {
                     $(this).find('input[name$=order]').val(i+1);
                 }
             });
@@ -67,8 +67,9 @@ jQuery(function($) {
   
   $('.remove_answer').live('click', function() {
     $(this).closest('li')
-      .fadeOut("slow")
-      .find('input[name$=text]').val('');
+      .find('input[name$=text]').val('').end()
+      .find('input[name$=code]').val('').end()
+      .fadeOut("slow");
     return false;
   });
   $('.remove_question').live('click', function() {
@@ -88,6 +89,21 @@ jQuery(function($) {
       window.location.href = './';
     });
     return false;
+  });
+  
+  $('img.fileupload').livequery(function() {
+    var img = this;
+    new AjaxUpload(img, {
+      onComplete: function(file, response) {
+        if (response == 'error')
+          alert("Извините, не удалось закачать ваш файл.");
+        else {
+    			img.src = '../tmp/uploads/' + response;
+          var codeField = $('#' + img.id + '_code');
+    			codeField.val(response);
+  			}
+  		}
+    });
   });
 });
 

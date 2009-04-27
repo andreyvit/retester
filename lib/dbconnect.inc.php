@@ -96,6 +96,30 @@ class Model {
     return empty($vars) && empty($this->overall_errors);
   }
   
+  function normalize_file_field($code_field, $file_field, $basename, $basedir) {
+    if (isset($this->$code_field) && $this->$code_field != 'keep') {
+      if ($this->$code_field != '' && !$this->is_saved())
+        return;
+
+      $path = "$basedir/{$this->$file_field}";
+      if (is_file($path))
+        unlink($path);
+        
+      if ($this->$code_field == '') {
+        $this->$file_field = '';
+      } else {
+        $ext = extension($this->$code_field);
+        $file_name = "$basename.$ext";
+        $path = "$basedir/$file_name";
+        if (!is_dir(dirname($path)))
+          mkdir(dirname($path), 0777, true);
+        rename("../tmp/uploads/{$this->$code_field}", $path);
+        $this->$file_field = $file_name;
+        $this->$code_field = 'keep';
+      }
+    }
+  }
+  
   // private
   
   function get_fields_for_insert() {
@@ -115,6 +139,17 @@ class Model {
         $field = false;
     $fields = array_filter($fields);
     $fields = array_diff($fields, array("id", "created_at", "updated_at", "table_name"));
+    return $fields;
+  }
+  
+  // static
+  function get_fields_for_select($klass) {
+    $fields = array_keys(get_class_vars($klass));
+    foreach($fields as &$field)
+      if (strstr($field, "__"))
+        $field = false;
+    $fields = array_filter($fields);
+    $fields = array_diff($fields, array("table_name"));
     return $fields;
   }
   
@@ -191,8 +226,17 @@ function execute($sql) {
 }
 
 function query($klass, $sql /*, $arg... */) {
+  $std_fields = "`".implode("`, `", Model::get_fields_for_select($klass))."`";
+  $vars = get_class_vars($klass);
+  if (!strstr($sql, "SELECT"))
+    $sql = "SELECT ** FROM _T_ $sql";
+  $sql = str_replace('_T_', "{$vars['table_name']}", $sql);
+  $sql = str_replace('**', $std_fields, $sql);
+  
   $args = func_get_args();
   array_shift($args);
+  array_shift($args);
+  array_unshift($args, $sql);
   $r = call_user_func_array('run_query', $args);
   $fields = array();
   $n = mysql_num_fields($r);
@@ -201,6 +245,8 @@ function query($klass, $sql /*, $arg... */) {
   $res = array();
   while($row = mysql_fetch_object($r, $klass)) {
     $row->_fetched_fields = $fields;
+    if (method_exists($row, 'wakeup'))
+      $row->wakeup();
     $res[] = $row;
   }
   mysql_free_result($r);

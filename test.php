@@ -5,7 +5,7 @@ $test_id = intval($_GET['test_id']);
 if ($test_id == 0)
   die("invalid test_id");
   
-$test = get('Test', "SELECT id, name, design_file, handler_file, finisher_file FROM tests WHERE `id` = %d", $test_id);
+$test = get('Test', "WHERE `id` = %d", $test_id);
 if (!$test) {
   include('templates/test_no_longer_exists.inc.php');
   exit;
@@ -33,7 +33,7 @@ function run_handler(&$RES, $test) {
     if (!$t) {
       // TODO: what to do when the question_ord returned by the handler does not exist?
     }
-    $question = get('Question', "SELECT `id`, `text`, `order` FROM questions WHERE `order` = %d AND `test_id` = %d LIMIT 1", $t->order, $test->id);
+    $question = get('Question', "WHERE `order` = %d AND `test_id` = %d LIMIT 1", $t->order, $test->id);
   } else if (is_array($action)) {
     $t = query('Model', "SELECT `id` FROM `questions` WHERE `test_id`=%d AND `order` BETWEEN %d AND %d AND $id_cond",
       $test->id, $action[0], $action[1], $answered_question_ids);
@@ -41,7 +41,7 @@ function run_handler(&$RES, $test) {
       $action = 'finish';
     } else {
       $t = $t[mt_rand(0, count($t) - 1)];
-      $question = get('Question', "SELECT `id`, `text`, `order` FROM questions WHERE `id` = %d AND `test_id` = %d LIMIT 1",
+      $question = get('Question', "WHERE `id` = %d AND `test_id` = %d LIMIT 1",
           $t->id, $test->id);
     }
   }
@@ -74,9 +74,9 @@ if ($_POST) {
   if ($answer_id == 0)
     die("Bad request: answer not specified");
   
-  $question = get('Question', "SELECT `id`, `order` FROM questions WHERE `id` = %d AND `test_id` = %d", $RES->question_id, $test->id);
+  $question = get('Question', "WHERE `id` = %d AND `test_id` = %d", $RES->question_id, $test->id);
   if ($question) {
-    $answer = get('Answer', "SELECT `id`, `order`, `points` FROM answers WHERE `id`=%d AND `question_id`=%d", $answer_id, $question->id);
+    $answer = get('Answer', "WHERE `id`=%d AND `question_id`=%d", $answer_id, $question->id);
     if ($answer) {
       $a = new QuestionResult;
       $a->question_id = $question->id;
@@ -118,10 +118,10 @@ if (!isset($RES->question_no)) {
 } else {
   // we always pick a question by id in GET request, so that pressing F5 will render the same
   // question over and over again
-  $question = get('Question', "SELECT `id`, `text`, `order` FROM questions WHERE `id` = %d AND `test_id` = %d", $RES->question_id, $test_id);
+  $question = get('Question', "WHERE `id` = %d AND `test_id` = %d", $RES->question_id, $test_id);
 }
 
-$answers = query('Answer', "SELECT `id`, `text`, `order` FROM answers WHERE `question_id` = %d ORDER BY `order`", $question->id);
+$answers = query('Answer', "WHERE `question_id` = %d ORDER BY `order`", $question->id);
 
 include($test->design_file());
 

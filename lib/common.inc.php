@@ -26,4 +26,8 @@ function collect_attrs($array, $attr) {
   return $result;
 }
 
+function extension($file_name) {
+  return pathinfo($file_name, PATHINFO_EXTENSION);
+}
+
 ?>

@@ -2,7 +2,7 @@
   include '../lib/common.inc.php';
   
   $id = $_GET['test_id'];
-  if (!($test = get('Test', "SELECT id, name, design_file, handler_file, finisher_file FROM tests WHERE id = %s", $id)))
+  if (!($test = get('Test', "WHERE id = %s", $id)))
     redirect("/", "Извините, этот тест уже удален.");
     
   function list_files_recursively($from, $pretty = '') {
