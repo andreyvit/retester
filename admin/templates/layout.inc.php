@@ -20,7 +20,7 @@ function tab($name) {
       <h1><a href="#"><?= $title ?></a></h1>
       <div id="user-navigation">
         <ul>
-          <li><a href="#">Logout</a></li>
+          <li><a href="logout.php">Выход</a></li>
         </ul>
         <div class="clear"></div>
       </div>      
