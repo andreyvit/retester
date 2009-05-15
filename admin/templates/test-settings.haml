@@ -28,6 +28,10 @@
                 %option{ :value=>'none', :selected=>('' == $test->design_file ? 'selected':'') } (не указан)
                 - foreach($finisher_files as $file)
                   %option{ :value=>$file, :selected=>($file == $test->finisher_file ? 'selected':'') }= $file
+            .group
+              %input{ :id=>'sms_enabled', :name=>'sms_enabled', :type=>'checkbox', :checked=>($test->sms_enabled ? 'checked' : '') }
+              %label{ :for=>'sms_enabled', :class=>'checkbox' } Требовать отправку СМС
+              %input{ :name=>'sms_enabled_checkbox', :type=>'hidden', :value=>'1' }
         .clear
         .group.navform
           %input{ :type=>'submit', :class=>'button', :value => 'Сохранить изменения' }

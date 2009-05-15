@@ -5,7 +5,7 @@ define('IMAGE_UPLOAD_BASE_DIR', '../data/images');
 class Test extends Model {
   
   var $table_name = 'tests';
-  var $id, $name, $design_file, $handler_file, $finisher_file;
+  var $id, $name, $design_file, $handler_file, $finisher_file, $sms_enabled;
   
   function delete_children() {
     $questions = query('Question', "SELECT id FROM questions WHERE test_id = '%s'", $this->id);

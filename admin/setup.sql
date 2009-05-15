@@ -1,3 +1,4 @@
+use mysql;
 drop database retester;
 create database retester default charset utf8;
 use retester;
@@ -8,7 +9,8 @@ create table tests (
   created_at timestamp not null default current_timestamp,
   design_file varchar(255),
   handler_file varchar(255),
-  finisher_file varchar(255)
+  finisher_file varchar(255),
+  sms_enabled tinyint not null
 );
 
 create table questions (
@@ -29,7 +31,7 @@ create table answers (
   image_file varchar(255)
 );
 
-insert into tests(name, design_file, handler_file, finisher_file) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'stupid_points_printer.php');
+insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'stupid_points_printer.php', 1);
 set @test_id = last_insert_id();
 
 insert into questions(test_id, `order`, text) values (
@@ -64,5 +66,5 @@ insert into answers(question_id, `order`, `text`, points) values
 (@question_id, 2, "CO", -1),
 (@question_id, 3, "CO2", 0);
 
-insert into tests(name) values ("Ваш психологический тип");
+insert into tests(name, sms_enabled) values ("Ваш психологический тип", 1);
 set @test_id = last_insert_id();
