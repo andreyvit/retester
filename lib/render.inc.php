@@ -1,5 +1,8 @@
 <?php
 
+$FLASH = $_SESSION['flash'];
+$_SESSION['flash'] = '';
+
 function isAjax() {
   return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 }
@@ -18,9 +21,8 @@ function render_partial($template, $data) {
 }
 
 function render($template, $data) {
-  global $title;
-  $flash = $_SESSION['flash'];
-  $_SESSION['flash'] = '';
+  global $title, $FLASH;
+  $flash = $FLASH;
   $content = render_partial($template, $data);
   foreach($data as $k => $v)
     $$k = $v;

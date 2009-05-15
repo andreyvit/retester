@@ -113,6 +113,25 @@ if (!isset($RES->question_no)) {
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
   $question = run_handler($RES, $test);
 } else if ($RES->finished) {
+  if (!isset($RES->sms_chal)) {
+    $RES->sms_chal = random_string(REATESTER_SMS_CHAL_LENGTH);
+    $RES->sms_resp = random_string(REATESTER_SMS_RESP_LENGTH);
+    $RES->sms_received = false;
+  }
+  
+  if ($test->sms_enabled) {
+    if ($RES->sms_received)
+      $full = true;
+    else {
+      $full = false;
+      ob_start();
+      include('templates/sms-info.inc.php');
+      $sms_info = ob_get_clean();
+    }
+  } else {
+    $full = true;
+  }
+  
   include($test->finisher_file());
   exit;
 } else {
