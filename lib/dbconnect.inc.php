@@ -42,6 +42,8 @@ class Model {
   function assign($prefix, $fields) {
     foreach ($fields as $field) {
       $v = (isset($_REQUEST[$prefix.$field]) ? $_REQUEST[$prefix.$field] : null);
+      if (isset($_REQUEST[$prefix.$field."_checkbox"]))
+        $v = (is_null($v) ? 0 : ($v == '0' ? 0 : 1));
       if (method_exists($this, "normalize_".$field))
         $v = call_user_method("normalize_".$field, $this, $v);
       if (!is_null($v))
