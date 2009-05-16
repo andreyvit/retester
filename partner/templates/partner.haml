@@ -1,0 +1,64 @@
+.block
+  .content
+    %h2.title
+      - if($partner->is_saved())
+        Редактирование профиля
+      - if($partner->is_new())
+        Регистрация в партнерской программе
+    .inner
+      %form{ :method => 'POST', :action => "profile.php", :class => 'form' }
+        .group
+          .left
+            %label.label.right{ :for=>'email' }
+              E-mail
+          .right
+            %input.text_field{ :type=>'text', :id=>'email', :name=>'email', :value=>htmlspecialchars($partner->email) }
+            .error= $partner->field_errors->email
+          .clear
+        .group
+          .left
+            %label.label.right{ :for=>'password' } Пароль
+          .right
+            %input.text_field{ :type=>'password', :id=>'password', :name=>'password' }
+            .error= $partner->field_errors->password
+          .clear
+        .group
+          .left
+            %label.label.right{ :for=>'password_confirmation' } Подтвердите пароль
+          .right
+            %input.text_field{ :type=>'password', :id=>'password_confirmation', :name=>'password_confirmation' }
+            .error= $partner->field_errors->password_confirmation
+          .clear
+        .group
+          %label{ :for=>'first_name', :class=>'label' }
+            Имя
+            .error= $partner->field_errors->first_name
+          %input.text_field{ :type=>'text', :class=>'text_field', :id=>'first_name', :name=>'first_name', :value=>htmlspecialchars($partner->first_name) }
+        .group
+          %label{ :for=>'middle_name', :class=>'label' }
+            Отчество
+            .error= $partner->field_errors->middle_name
+          %input{ :type=>'text', :class=>'text_field', :id=>'middle_name', :name=>'middle_name', :value=>htmlspecialchars($partner->middle_name) }
+        .group
+          %label{ :for=>'last_name', :class=>'label' }
+            Фамилия
+            .error= $partner->field_errors->last_name
+          %input{ :type=>'text', :class=>'text_field', :id=>'last_name', :name=>'last_name', :value=>htmlspecialchars($partner->last_name) }
+        .group
+          %label{ :for=>'phone', :class=>'label' }
+            Мобильный телефон
+            .error= $partner->field_errors->phone
+          %input{ :type=>'text', :class=>'text_field', :id=>'phone', :name=>'phone', :value=>htmlspecialchars($partner->phone) }
+        .group
+          %label{ :for=>'icq', :class=>'label' }
+            Номер ICQ
+            .error= $partner->field_errors->icq
+          %input{ :type=>'text', :class=>'text_field', :id=>'icq', :name=>'icq', :value=>htmlspecialchars($partner->icq) }
+        .group
+          %label{ :for=>'wmid', :class=>'label' }
+            Номер кошелька Web Money (WMID)
+            .error= $partner->field_errors->wmid
+          %input{ :type=>'text', :class=>'text_field', :id=>'wmid', :name=>'wmid', :value=>htmlspecialchars($partner->wmid) }
+        .clear
+        .group.navform
+          %input{ :type=>'submit', :class=>'button', :value => ($partner->is_new() ? 'Зарегистрироваться' : 'Сохранить изменения') }

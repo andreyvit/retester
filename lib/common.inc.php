@@ -11,6 +11,8 @@ require_once 'lib/HamlParser.class.php';
 
 session_start();
 require_once 'lib/render.inc.php';
+require_once 'lib/loginkit.inc.php';
+require_once 'lib/security.inc.php';
 
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -36,6 +38,15 @@ function random_string($l, $c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", $u = true) {
  if (!$u) for ($s = '', $i = 0, $z = strlen($c)-1; $i < $l; $x = rand(0,$z), $s .= $c{$x}, $i++); 
  else for ($i = 0, $z = strlen($c)-1, $s = $c{rand(0,$z)}, $i = 1; $i != $l; $x = rand(0,$z), $s .= $c{$x}, $s = ($s{$i} == $s{$i-1} ? substr($s,0,-1) : $s), $i=strlen($s)); 
  return $s; 
+}
+
+function validate_email($email){
+  return preg_match('/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/',$email);
+}
+
+function verify_email_dns($email) {
+    list($name, $domain) = split('@', $email);
+    return checkdnsrr($domain, 'MX');
 }
 
 ?>

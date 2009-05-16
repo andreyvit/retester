@@ -31,6 +31,19 @@ create table answers (
   image_file varchar(255)
 );
 
+create table partners (
+  id int auto_increment not null primary key,
+  email varchar(255) not null,
+  password_salt varchar(255) not null,
+  password_hash varchar(255) not null,
+  first_name varchar(255) not null,
+  last_name varchar(255) not null,
+  middle_name varchar(255) not null,
+  phone varchar(255) not null,
+  icq varchar(255) not null,
+  wmid varchar(255) not null
+);
+
 insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'stupid_points_printer.php', 1);
 set @test_id = last_insert_id();
 

@@ -7,6 +7,42 @@ mysql_select_db(REATESTER_DB_NAME)
   
 class Model {
   
+  // public class methods
+  
+  function get_from_request(
+        $model_name,    /* model class name */
+        $fallback_url,  /* redirect here if the request is invalid */
+        $deleted_flash_message,  /* flash message when no such object is found, null to prevent redirection */
+        $request_param_name = null, $scope_var_name = null, $scope_foreign_key = null) {
+    if (is_null($request_param_name))
+      $request_param_name = strtolower($model_name)."_id";
+
+    if (empty($_REQUEST[$request_param_name])) {
+      redirect($fallback_url);
+      die();
+    }
+    
+    $id = $_REQUEST[$request_param_name];
+    if (is_null($scope_var_name)) {
+      $result = get($model_name, "WHERE `id` = '%s'", $id);
+    } else {
+      if (is_null($scope_foreign_key))
+         $scope_foreign_key = $scope_var_name."_id";
+      if (empty($GLOBALS[$scope_var_name]))
+        die("global variable $scope_var_name must be set before the call to Model::get_from_request");
+      $scope = $GLOBALS[$scope_var_name];
+      if (empty($scope->id))
+        die("$scope_var_name->id is not defined");
+      $result = get($model_name, "WHERE `id` = '%s' AND `$scope_foreign_key` = '%s'", $id, $scope->id);
+    }
+    
+    if (!$result && !is_null($deleted_flash_message)) {
+      redirect($fallback_url, $deleted_flash_message);
+      die();
+    }
+    return $result;
+  }
+  
   // public methods
   
   function getID() {
@@ -39,21 +75,23 @@ class Model {
       $this->put();
   }
   
-  function assign($prefix, $fields) {
+  function assign($prefix, $fields = null) {
+    if (!$fields)
+      if (isset($this->form_fields))
+        $fields = $this->form_fields;
+      else
+        die("assign() expects the second argument or \$this->form_fields to be defined");
     foreach ($fields as $field) {
       $v = (isset($_REQUEST[$prefix.$field]) ? $_REQUEST[$prefix.$field] : null);
       if (isset($_REQUEST[$prefix.$field."_checkbox"]))
         $v = (is_null($v) ? 0 : ($v == '0' ? 0 : 1));
       if (method_exists($this, "normalize_".$field))
         $v = call_user_method("normalize_".$field, $this, $v);
+      else
+        $v = trim($v);
       if (!is_null($v))
         $this->$field = $v;
     }
-    $this->normalize();
-    
-    $this->overall_errors = array();
-    $this->field_errors = new stdClass;
-    $this->validate();
   }
   
   function delete() {
@@ -94,6 +132,12 @@ class Model {
   }
   
   function is_valid() {
+    $this->normalize();
+    
+    $this->overall_errors = array();
+    $this->field_errors = new stdClass;
+    $this->validate();
+    
     $vars = get_object_vars($this->field_errors);
     return empty($vars) && empty($this->overall_errors);
   }
@@ -124,13 +168,17 @@ class Model {
   
   // private
   
+  function filter_out_special_fields($fields) {
+    return array_diff($fields, array("id", "created_at", "updated_at", "table_name", "form_fields"));
+  }
+  
   function get_fields_for_insert() {
     $fields = array_keys(get_class_vars(get_class($this)));
     foreach($fields as &$field)
       if (strstr($field, "__"))
         $field = false;
     $fields = array_filter($fields);
-    $fields = array_diff($fields, array("id", "created_at", "updated_at", "table_name"));
+    $fields = $this->filter_out_special_fields($fields);
     return $fields;
   }
   
@@ -140,7 +188,7 @@ class Model {
       if (strstr($field, "__"))
         $field = false;
     $fields = array_filter($fields);
-    $fields = array_diff($fields, array("id", "created_at", "updated_at", "table_name"));
+    $fields = $this->filter_out_special_fields($fields);
     return $fields;
   }
   
@@ -151,7 +199,7 @@ class Model {
       if (strstr($field, "__"))
         $field = false;
     $fields = array_filter($fields);
-    $fields = array_diff($fields, array("table_name"));
+    $fields = array_diff($fields, array("table_name", "form_fields"));
     return $fields;
   }
   

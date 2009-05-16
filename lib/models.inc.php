@@ -96,6 +96,73 @@ class Answer extends Model {
 
 }
 
+class Partner extends Model {
+  
+  var $table_name = "partners";
+  var $id, $email, $first_name, $last_name, $middle_name, $phone, $icq, $wmid;
+  var $password_salt, $password_hash; // NOT form fields
+  var $form_fields = array('email', 'first_name', 'last_name', 'middle_name', 'phone', 'icq', 'wmid');
+  
+  var $loginkit__tags = array('partner+');
+  
+  function validate() {
+    if (empty($this->email))
+      $this->field_error('email', 'Обязательное поле.');
+    else if (!validate_email($this->email))
+      $this->field_error('email', 'Неверный формат адреса.');
+
+    if ($this->is_saved() && empty($this->password) && !empty($this->password_confirmation)) {
+      $this->field_error('password', 'Пароль нужно вводить в оба поля.');
+      $this->field_error('password_confirmation', 'Пароль нужно вводить в оба поля.');
+    } else if ($this->is_new() || !empty($this->password)) {
+      if (empty($this->password)) {
+        $this->field_error('password', 'Обязательное поле.');
+        $this->field_error('password_confirmation', 'Пожалуйста, введите пароль еще раз.');
+      } else if (strlen($this->password) < 6) {
+        $this->field_error('password', 'Требуется как минимум 6 символов.');
+        $this->field_error('password_confirmation', 'Пожалуйста, введите пароль еще раз.');
+      } else if ($this->password != $this->password_confirmation) {
+        $this->field_error('password', 'Пожалуйста, введите пароль еще раз.');
+        $this->field_error('password_confirmation', 'Пароли не совпали.');
+      }
+    }
+      
+    if (empty($this->first_name))
+      $this->field_error('first_name', 'Обязательное поле.');
+    else if (strlen($this->first_name) < 2)
+      $this->field_error('first_name', 'Требуется как минимум 2 символа.');
+      
+    if (empty($this->last_name))
+      $this->field_error('last_name', 'Обязательное поле.');
+    else if (strlen($this->last_name) < 2)
+      $this->field_error('last_name', 'Требуется как минимум 2 символа.');
+      
+    if (!empty($this->middle_name))
+      if (strlen($this->middle_name) < 2)
+        $this->field_error('middle_name', 'Требуется как минимум 2 символа.');
+      
+    if (empty($this->phone))
+      $this->field_error('phone', 'Обязательное поле.');
+    else if (strlen($this->phone) < 7)
+      $this->field_error('phone', 'Требуется как минимум 7 символов.');
+    else if (!preg_match('/^[\\d+ ()-]+$/', $this->phone))
+      $this->field_error('phone', 'Неверный формат данных.');
+      
+    if (!empty($this->icq))
+      if (strlen($this->icq) < 4)
+        $this->field_error('icq', 'Требуется как минимум 4 символа.');
+      else if (!preg_match('/^[\d -]+$/', $this->icq))
+        $this->field_error('icq', 'Неверный формат данных.');
+      
+    if (!empty($this->wmid))
+      if (strlen($this->wmid) != 13)
+        $this->field_error('wmid', 'Требуется ровно 13 символов: буква валюты и 12 цифр.');
+      else if (!preg_match('/^[RZU]\d{12}$/', $this->wmid))
+        $this->field_error('wmid', 'Неверный формат: требуется буква валюты (R, Z или U) и 12 цифр.');
+  }
+  
+}
+
 class TestResult {
   // $question_no
   // $answers

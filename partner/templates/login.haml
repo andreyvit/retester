@@ -1,0 +1,26 @@
+    
+#box
+  .block#block-login
+    %h2 Вход для партнеров
+    .content.login
+      - if($flash)
+        .flash
+          .message.error
+            = $flash
+      %form.form.login{ :action => '', :method => 'POST' }
+        .group
+          .left
+            %label.label.right E-mail
+          .right
+            %input.text_field{ :type=>'text', :name=>'email', :value=>htmlspecialchars($email) }
+          .clear
+        .group
+          .left
+            %label.label.right Пароль
+          .right
+            %input.text_field{ :type=>'password', :name=>'password' }
+          .clear
+        .group.navform
+          .right
+            %input.button{ :type=>'submit', :value=>'Войти' }
+          .clear

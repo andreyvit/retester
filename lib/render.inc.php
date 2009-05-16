@@ -20,19 +20,22 @@ function render_partial($template, $data) {
   return $haml->setFile($template);
 }
 
-function render($template, $data) {
+function render($template, $data, $layout = 'layout') {
   global $title, $FLASH;
   $flash = $FLASH;
   $content = render_partial($template, $data);
   foreach($data as $k => $v)
     $$k = $v;
-  include 'templates/layout.inc.php';
+  include "templates/$layout.inc.php";
 }
 
 function redirect($extra, $flash = "") {
   $host  = $_SERVER['HTTP_HOST'];
-  if ($extra == '/') $extra = '';
   $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+  if (strlen($extra) > 0 && $extra{0} == '/'){
+    $uri = '';
+    $extra = ltrim($extra, '/');
+  }
   $_SESSION['flash'] = $flash;
   header("Location: http://$host$uri/$extra");
   die();
