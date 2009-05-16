@@ -11,10 +11,14 @@ if (!$test) {
   exit;
 }
 
+if (isset($_REQUEST['partner_id'])) {
+  $_SESSION['partner_id'] = intval($_REQUEST['partner_id']);
+}
+
 if (!isset($_SESSION['tests']))
   $_SESSION['tests'] = array();
 
-function run_handler(&$RES, $test) {
+function run_handler(&$RES, $test, $answered_question_id, $answer_id) {
   $t = get('Model', "SELECT MAX(`order`) AS question_count FROM questions WHERE `test_id` = %d", $test->id);
   $question_count = $t->question_count;
   $action = next_action($RES, $question_count);
@@ -49,10 +53,13 @@ function run_handler(&$RES, $test) {
     $RES->question_id = $question->id;
     $RES->question_ord = $question->order;
     $RES->question_no++;
+    if (!is_null($answered_question_id))
+      stat_question_answered($RES->session_id, $test->id, $RES->partner_id, $RES->day, $answered_question_id, $answer_id, $RES->question_id, $RES->paid);
     return $question;
   }
   if ($action == 'finish') {
     $RES->finished = true;
+    stat_test_finished($RES->session_id, $test->id, $RES->partner_id, $RES->day, $answered_question_id, $answer_id, $RES->paid);
     redirect("test.php?test_id=$test->id");
     die();
   }
@@ -90,7 +97,7 @@ if ($_POST) {
   include($test->handler_file());
   if (!function_exists('next_action'))
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
-  $question = run_handler($RES, $test);
+  $question = run_handler($RES, $test, ($question ? $question->id : 0), ($answer ? $answer->id : 0));
   redirect("test.php?test_id=$test->id");
   exit;
 }
@@ -107,11 +114,18 @@ $again_url = "again.php?test_id=$test->id";
 $submit_url = "test.php?test_id=$test->id";
 
 if (!isset($RES->question_no)) {
+  // start of test
   $RES->question_no = 0;
+  $RES->partner_id = (isset($_SESSION['partner_id']) ? $_SESSION['partner_id'] : 0);
+  $RES->day = strftime("%Y-%m-%d");
+  // be nice to the user (and to the statistics), save sms_enabled at the start of test in case it is changed later
+  $RES->paid = $test->sms_enabled;
   include($test->handler_file());
   if (!function_exists('next_action'))
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
-  $question = run_handler($RES, $test);
+  // if the handler finishes the test right away, the statistics will end up incorrect
+  $question = run_handler($RES, $test, null, null);
+  $RES->session_id = stat_test_started($test->id, $RES->partner_id, $RES->day, $question->id, $RES->paid);
 } else if ($RES->finished) {
   if (!isset($RES->sms_chal)) {
     $RES->sms_chal = random_string(REATESTER_SMS_CHAL_LENGTH);

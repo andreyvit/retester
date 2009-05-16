@@ -44,5 +44,7 @@
   <p><input type="submit" value="Ответить"></p>
 </form>
 
+<p>Partner ID: <?= $RES->partner_id ?></p>
+
 </body>
 </html>

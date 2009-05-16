@@ -273,6 +273,7 @@ function run_query($sql) {
 function execute($sql) {
   $args = func_get_args();
   call_user_func_array('run_query', $args);
+  return mysql_affected_rows();
 }
 
 function query($klass, $sql /*, $arg... */) {

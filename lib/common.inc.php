@@ -8,6 +8,7 @@ require_once 'config/config.inc.php';
 require_once 'lib/dbconnect.inc.php';
 require_once 'lib/models.inc.php';
 require_once 'lib/HamlParser.class.php';
+require_once 'lib/statistics.inc.php';
 
 session_start();
 require_once 'lib/render.inc.php';

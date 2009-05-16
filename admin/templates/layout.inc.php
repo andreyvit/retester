@@ -26,6 +26,7 @@ function tab($name) {
       </div>      
       <div id="main-navigation">
         <ul>
+          <li class="<?=tab('statistics')?>"><a href="statistics.php?test_id=<?=$_REQUEST['test_id']?>">Статистика</a></li>
           <li class="<?=tab('all-tests')?> first"><a href="index.php?test_id=<?=$_REQUEST['test_id']?>">Выбор теста</a></li>
           <li class="<?=tab('files')?>"><a href="files.php?test_id=<?=$_REQUEST['test_id']?>">Файлы</a></li>
           <? if($_REQUEST['test_id']): ?>

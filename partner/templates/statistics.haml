@@ -1,0 +1,43 @@
+.block
+  .content
+    %h2.title Статистика по дням за месяц
+    .inner
+      %table.table
+        %tr
+          %th.first Дата
+          %th Начали тест
+          %th % не окончили тест
+          %th % окончили тест в бесплатном режиме
+          %th % окончили тест, но не отправили СМС
+          %th % отправили СМС
+          %th.last СМС получено
+        - foreach($daily_stats as $stat)
+          %tr
+            %td.first= $stat->day
+            %td= $stat->count_starts + $stat->count_free_stats
+            %td= intval(($stat->count_starts + $stat->count_free_stats - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= $stat->count_smses
+              
+    %h2.title Статистика по тестам за месяц
+    .inner
+      %table.table
+        %tr
+          %th.first Тест
+          %th Начали тест
+          %th % не окончили тест
+          %th % окончили тест в бесплатном режиме
+          %th % окончили тест, но не отправили СМС
+          %th % отправили СМС
+          %th.last СМС получено
+        - foreach($test_stats as $stat)
+          %tr
+            %td.first= $stat->test_name
+            %td= $stat->count_starts + $stat->count_free_stats
+            %td= intval(($stat->count_starts + $stat->count_free_stats - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= $stat->count_smses

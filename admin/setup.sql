@@ -19,7 +19,9 @@ create table questions (
   created_at timestamp not null default current_timestamp,
   `order` int not null,
   `text` longtext not null default "",
-  image_file varchar(255)
+  image_file varchar(255),
+  count_bounces int not null default 0,
+  count_answers int not null default 0
 );
 
 create table answers (
@@ -28,7 +30,8 @@ create table answers (
   `order` int not null,
   `text` longtext not null default "",
   points int not null default 0,
-  image_file varchar(255)
+  image_file varchar(255),
+  count_answers int not null default 0
 );
 
 create table partners (
@@ -44,7 +47,31 @@ create table partners (
   wmid varchar(255) not null
 );
 
-insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'stupid_points_printer.php', 1);
+create table sessions (
+  id int auto_increment not null primary key,
+  partner_id int not null, /* 0 for none */
+  test_id int not null,
+  bounce_question_id int not null,
+  paid tinyint not null,
+  answer_count int not null default 0,
+  started_at timestamp not null default current_timestamp,
+  finished_at timestamp null,
+  sms_received_at timestamp null
+);
+
+create table daily_statistics (
+  day date not null,
+  partner_id int not null, /* 0 for none */
+  test_id int not null,
+  count_free_starts int not null default 0,
+  count_free_finishes int not null default 0,
+  count_starts int not null default 0,
+  count_finishes int not null default 0,
+  count_smses int not null default 0,
+  primary key (day, partner_id, test_id)
+);
+
+insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'sms_points_printer.php', 1);
 set @test_id = last_insert_id();
 
 insert into questions(test_id, `order`, text) values (
