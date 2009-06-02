@@ -5,6 +5,25 @@ mysql_connect(REATESTER_DB_HOST, REATESTER_DB_USER, REATESTER_DB_PASSWORD) or
 mysql_select_db(REATESTER_DB_NAME)
   or die("cannot select database");
   
+function dbkit_classify($name) {
+  return preg_replace('/(?:([a-z0-9])_|^)([a-z])/e', '"$1".strtoupper("$2")', $name);
+}
+
+function dbkit_tableize($name) {
+  return strtolower(preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $name));
+}
+
+function dbkit_collect_attrs($array, $attr) {
+  $result = array();
+  foreach ($array as $obj)
+    $result[] = $obj->$attr;
+  return $result;
+}
+
+
+//die(implode(", ", array(dbkit_classify("foo"), dbkit_classify("foo_bar"), dbkit_classify("foo2_bar"))));
+//die(implode(", ", array(dbkit_tableize("Foo"), dbkit_tableize("FooBar"), dbkit_tableize("Foo2Bar"))));
+  
 class Model {
   
   // public class methods
@@ -100,6 +119,33 @@ class Model {
       $this->delete_children();
       $this->id = null;
     }
+  }
+  
+  function __get($name) {
+    $id_name = $name."_id";
+    $class_name = $name."__class";
+    $fk_name = $name."__fk";
+    if (isset($this->$id_name)) {
+      $klass = isset($this->$class_name) ? $this->$class_name : dbkit_classify($name);
+      if (!isset($this->dbkit__resultset))
+        $this->$name = get($klass, "WHERE `id`='%s'", $this->$id_name);
+      else {
+        $items = query_indexed($klass, 'id', "WHERE `id` IN %s", array_unique(dbkit_collect_attrs($this->dbkit__resultset, $id_name)));
+        foreach($this->dbkit__resultset as $row)
+          $row->$name = $items[$row->$id_name];
+      }
+      return $this->$name;
+    } else if (isset($this->$class_name)) {
+      $klass = $this->$class_name;
+      $fk = isset($this->$fk_name) ? $this->$fk_name : dbkit_tableize(get_class($this))."_id";
+      $this->$name = get($klass, "WHERE `$fk`='%s'", $this->id);
+      return $this->$name;
+    }
+    $trace = debug_backtrace();
+    trigger_error(
+        'Undefined property via __get(): '.$name.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
+        E_USER_NOTICE);
+    return null;
   }
   
   // protected, override points
@@ -200,6 +246,11 @@ class Model {
         $field = false;
     $fields = array_filter($fields);
     $fields = array_diff($fields, array("table_name", "form_fields"));
+    foreach ($fields as &$field)
+      if (in_array(substr($field, strlen($field)-3), array('_on', '_at')))
+        $field = "UNIX_TIMESTAMP(`$field`) AS `$field`";
+      else
+        $field = "`$field`";
     return $fields;
   }
   
@@ -277,7 +328,7 @@ function execute($sql) {
 }
 
 function query($klass, $sql /*, $arg... */) {
-  $std_fields = "`".implode("`, `", Model::get_fields_for_select($klass))."`";
+  $std_fields = implode(", ", Model::get_fields_for_select($klass));
   $vars = get_class_vars($klass);
   if (!strstr($sql, "SELECT"))
     $sql = "SELECT ** FROM _T_ $sql";
@@ -301,6 +352,8 @@ function query($klass, $sql /*, $arg... */) {
     $res[] = $row;
   }
   mysql_free_result($r);
+  foreach($res as &$r)
+    $r->dbkit__resultset = $res;
   return $res;
 }
 
