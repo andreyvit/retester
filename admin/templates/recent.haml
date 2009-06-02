@@ -1,0 +1,60 @@
+.block
+  .content
+            
+    %h2.title Последние <?=$recent_limit?> полученных СМС
+    .inner
+      %table.table
+        %tr
+          %th Начало
+          %th Тест
+          %th Партнер
+          %th Заняло
+          %th СМС
+        - foreach($sms_sessions as $session)
+          %tr
+            %td= absolute_time($session->started_at)
+            %td= $session->test->name
+            %td= $session->partner->email
+            %td
+              - if(!$session->finished_at)
+                = "—"
+              - if($session->finished_at)
+                = time_span($session->finished_at - $session->started_at)
+            %td
+              - if(!$session->sms_received_at)
+                = "—"
+              - if($session->sms_received_at)
+                = "получена"
+            
+    %h2.title Последние <?=$recent_limit?> завершенных тестов
+    .inner
+      %table.table
+        %tr
+          %th Начало
+          %th Тест
+          %th Партнер
+          %th Заняло
+          %th СМС
+        - foreach($finished_sessions as $session)
+          %tr
+            %td= absolute_time($session->started_at)
+            %td= $session->test->name
+            %td= $session->partner->email
+            %td
+              - if(!$session->finished_at)
+                = "—"
+              - if($session->finished_at)
+                = time_span($session->finished_at - $session->started_at)
+            %td
+              - if(!$session->sms_received_at)
+                = "—"
+              - if($session->sms_received_at)
+                = "получена"
+
+    %h2.title Последние <?=$recent_limit?> брошенных тестов
+    .inner
+      %table.table
+        %tr
+          %th Начало
+          %th Тест
+          %th Партнер

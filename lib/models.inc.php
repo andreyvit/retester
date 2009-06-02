@@ -183,4 +183,11 @@ class QuestionResult {
   // $points
 }
 
+class TestSession extends Model {
+  var $table_name = 'sessions';
+  
+  var $partner_id, $test_id, $bounce_question_id;
+  var $paid, $answer_count, $started_at, $finished_at, $sms_received_at;
+}
+
 ?>

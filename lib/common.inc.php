@@ -50,4 +50,45 @@ function verify_email_dns($email) {
     return checkdnsrr($domain, 'MX');
 }
 
+function absolute_time($time) {
+    $today = strtotime(date('M j, Y'));
+    $reldays = ($time - $today)/86400;
+    if ($reldays >= 0 && $reldays < 1)
+        return date('h:i', $time);
+    else if (abs($reldays) < 182)
+        return date('M j h:i', $time);
+    else
+        return date('M j, Y',$time);
+}
+
+function time_span($seconds) {
+  return floor(($seconds + 10) / 60) . "&nbsp;мин";
+}
+
+function relative_date($time) {
+    $today = strtotime(date('M j, Y'));
+    $reldays = ($time - $today)/86400;
+    if ($reldays >= 0 && $reldays < 1) {
+        return 'today';
+    } else if ($reldays >= 1 && $reldays < 2) {
+        return 'tomorrow';
+    } else if ($reldays >= -1 && $reldays < 0) {
+        return 'yesterday';
+    }
+    if (abs($reldays) < 7) {
+        if ($reldays > 0) {
+            $reldays = floor($reldays);
+            return 'in ' . $reldays . ' day' . ($reldays != 1 ? 's' : '');
+        } else {
+            $reldays = abs(floor($reldays));
+            return $reldays . ' day'  . ($reldays != 1 ? 's' : '') . ' ago';
+        }
+    }
+    if (abs($reldays) < 182) {
+        return date('l, F j', $time);
+    } else {
+        return date('l, F j, Y',$time);
+    }
+}
+
 ?>
