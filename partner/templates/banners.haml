@@ -1,0 +1,10 @@
+.block
+  .content
+    %h2.title Партнерская программа re:tester
+    .inner
+      %ul
+        - foreach($tests as $test)
+          %li
+            %a{ :href => $test->url }= htmlspecialchars($test->name)
+            —
+            = $test->url

@@ -8,4 +8,6 @@ define('REATESTER_DB_NAME', 'retester');
 define('REATESTER_SMS_CHAL_LENGTH', 4);
 define('REATESTER_SMS_RESP_LENGTH', 4);
 
+define('REATESTER_SMS_PREFIX', 'QQQ');
+
 ?>

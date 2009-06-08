@@ -71,6 +71,10 @@ create table daily_statistics (
   primary key (day, partner_id, test_id)
 );
 
+create table smses (
+  
+);
+
 insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'sms_points_printer.php', 1);
 set @test_id = last_insert_id();
 

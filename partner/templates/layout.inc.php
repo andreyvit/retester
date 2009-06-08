@@ -34,7 +34,7 @@ function tab($name) {
         <ul>
           <li class="<?=tab('all-tests')?> first"><a href="index.php">Партнерам</a></li>
           <li class="<?=tab('profile')?>"><a href="profile.php">Профиль</a></li>
-          <li class="<?=tab('files')?>"><a href="banners.php">Баннеры</a></li>
+          <li class="<?=tab('banners')?>"><a href="banners.php">Баннеры</a></li>
           <li class="<?=tab('statistics')?>"><a href="statistics.php">Статистика</a></li>
           <li class="<?=tab('questions')?>"><a href="payments.php">Выплаты</a></li>
           <? if($_REQUEST['test_id']): ?>

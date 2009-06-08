@@ -1,9 +1,24 @@
+<? require_once 'lib/carriers.inc.php' ?>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="javascripts/carriers.js"></script>
+<script type="text/javascript" src="javascripts/carrier-select.js"></script>
 <div id="sms-info">
-  <p><select><option>— Выберите вашу страну —<option>Россия</option><option>Украина</option></select></p>
-  <p><select><option>— Выберите вашего сотового оператора —</option><option>Билайн</option><option>МТС</option></select></p>
   <p>
-    Отправьте СМС на номер <code>1111</code> с текстом «<code>Q7B <?=$RES->sms_chal?></code>».
-    Стоимость СМС 10 рублей.
+    <select id="countries" name="country" style="width: 200px;">
+      <option value="">— Выберите вашу страну —</option>
+      <? echo_country_options(); ?>
+    </select>
+  </p>
+  <p>
+    <select id="carriers" name="carrier" style="width: 200px;" disabled="disabled">
+      <option value="">--выберите вашего оператора--</option>
+    </select>
+    <span id="only_carrier"></span>
+  </p>
+  <p id="sms_details">
+    Отправьте СМС на номер <code id="sms_phone">????</code>
+    с текстом «<code><span id="sms_prefix"><?= REATESTER_SMS_PREFIX ?></span> <?=$RES->sms_chal?></code>».
+    Стоимость СМС <span id="sms_price">??</span>.
   </p>
   <form id="sms-resp-form" action="sms-resp.php?test_id=<?=$test->id?>" method="POST">
     <? if($FLASH): ?>
