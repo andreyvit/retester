@@ -91,4 +91,20 @@ function relative_date($time) {
     }
 }
 
+function js_to_string($arg) {
+	return "'" . addslashes($arg) . "'";
+}
+
+function js_call_and_exit($func) {
+  $args = func_get_args();
+  array_shift($args);
+  
+  $data = ob_get_clean();
+  if (strlen($data))
+  	echo "if (window.console) window.console.log(" . js_to_string($data) . ");";
+  
+  echo "$func(" . implode(", ", array_map('js_to_string', $args)) . ");";
+  die();
+}
+
 ?>
