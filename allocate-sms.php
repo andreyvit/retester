@@ -41,6 +41,6 @@ foreach ($best_carrier->phones as $phone)
 		$best_phone_fee = doubleval($phone->fee);
 	}
 
-js_call_and_exit("sms_allocated", $phone->phone, $phone->fee, $phone->fee_curr, '');
+js_call_and_exit("sms_allocated", $phone->phone, $phone->fee, $phone->fee_curr, REATESTER_SMS_PREFIX . ' ');
 
 ?>

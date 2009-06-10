@@ -72,7 +72,18 @@ create table daily_statistics (
 );
 
 create table smses (
-  
+  id int not null auto_increment primary key,
+  smsid varchar(20) not null,
+  carrier_id int null,
+  service_phone varchar(20) not null,
+  user_phone varchar(20) not null,
+  msg varchar(100) not null,
+  suffix varchar(100) not null,
+  confidence_rate int not null,
+  fee decimal(12,4) null,
+  fee_curr varchar(3) null,
+  service_earning decimal(12,4) not null,
+  partner_earning decimal(12,4) not null
 );
 
 insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'sms_points_printer.php', 1);

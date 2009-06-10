@@ -8,7 +8,7 @@ function hide_details() {
 function show_details(phone, fee, fee_curr, prefix) {
 	$('#sms_phone').html(phone);
 	$('#sms_price').html(fee + ' ' + fee_curr);
-	$('#sms_prefix').html('');
+	$('#sms_prefix').html(prefix);
 	$('#sms_details').show();
 	$('#sms-response').show();
 }
@@ -107,3 +107,4 @@ jQuery(function($) {
 	$('#countries').selectedIndex = 0;
 	countries_onchange();
 });
+ 

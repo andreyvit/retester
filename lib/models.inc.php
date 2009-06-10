@@ -190,4 +190,11 @@ class TestSession extends Model {
   var $paid, $answer_count, $started_at, $finished_at, $sms_received_at;
 }
 
+class SMS extends Model {
+  var $table_name = 'smses';
+  
+  var $id, $smsid, $carrier_id, $service_phone, $user_phone, $msg, $suffix, $confidence_rate;
+  var $fee, $fee_curr, $service_earning, $partner_earning;
+}
+
 ?>
