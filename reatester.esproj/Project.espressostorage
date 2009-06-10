@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.macrabbit.Espresso.Publisher.PublishServers</key>
+	<array>
+		<dict>
+			<key>ESPublishServerStateAskForPasswordWhenConnectingKey</key>
+			<false/>
+			<key>ESPublishServerStateDeriveServerTimeOffsetAutomaticallyKey</key>
+			<true/>
+			<key>ESPublishServerStateHostKey</key>
+			<string>buriy.com</string>
+			<key>ESPublishServerStateModeKey</key>
+			<integer>0</integer>
+			<key>ESPublishServerStateNameKey</key>
+			<string>retester.buriy.com</string>
+			<key>ESPublishServerStatePathKey</key>
+			<string>/var/www/retester</string>
+			<key>ESPublishServerStatePortKey</key>
+			<integer>22</integer>
+			<key>ESPublishServerStateSavedMergeOperationMasksKey</key>
+			<dict>
+				<key>sftp://andreyvit@buriy.com:22</key>
+				<dict>
+					<key>/var/www/retester/.git</key>
+					<integer>3221225472</integer>
+					<key>/var/www/retester/tmp</key>
+					<integer>3221225472</integer>
+				</dict>
+			</dict>
+			<key>ESPublishServerStateServerTimeOffsetKey</key>
+			<real>-3600</real>
+			<key>ESPublishServerStateTypeKey</key>
+			<string>SFTP</string>
+			<key>ESPublishServerStateUpdateThresholdKey</key>
+			<real>3600</real>
+			<key>ESPublishServerStateUserKey</key>
+			<string>andreyvit</string>
+		</dict>
+	</array>
+	<key>com.macrabbit.Espresso.Publisher.PublishServers.Order</key>
+	<array>
+		<integer>0</integer>
+	</array>
+</dict>
+</plist>
