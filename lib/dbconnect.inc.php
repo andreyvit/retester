@@ -304,6 +304,7 @@ function run_query($sql) {
   array_shift($args);
   foreach($args as &$arg) {
     if (is_array($arg)) {
+      if (count($arg) == 0) $arg = array(-1);
       $parts = array();
       foreach ($arg as $part)
         $parts[] = mysql_real_escape_string("$part");
