@@ -4,7 +4,8 @@
   // $test = Model::get_from_request('Test', 'index.php', "Извините, этот тест уже удален.");
   $title = "Статистика";
   
-  $sum = "SUM(`count_free_starts`) AS `count_free_starts`, SUM(`count_free_finishes`) AS `count_free_finishes`, SUM(`count_starts`) AS `count_starts`, SUM(`count_finishes`) AS `count_finishes`, SUM(`count_smses`) AS `count_smses`";
+  $sum = "SUM(`count_free_starts`) AS `count_free_starts`, SUM(`count_free_finishes`) AS `count_free_finishes`, SUM(`count_starts`) AS `count_starts`, SUM(`count_finishes`) AS `count_finishes`, SUM(`count_smses`) AS `count_smses`, SUM(`service_earning`) AS `service_earning`, SUM(`partner_earning`) AS `partner_earning`";
+
   $daily_stats = query('DailyStatistics', "SELECT `day`, $sum FROM _T_ WHERE `day` >= DATE_ADD(NOW(), INTERVAL -1 MONTH) GROUP BY `day` ORDER BY `day`");
   
   $partner_stats = query('DailyStatistics', "SELECT `partner_id`, $sum FROM _T_ WHERE `day` >= DATE_ADD(NOW(), INTERVAL -1 MONTH) GROUP BY `partner_id`");

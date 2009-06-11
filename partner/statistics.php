@@ -5,7 +5,7 @@
 
   $title = "Статистика";
   
-  $sum = "SUM(`count_free_starts`) AS `count_free_starts`, SUM(`count_free_finishes`) AS `count_free_finishes`, SUM(`count_starts`) AS `count_starts`, SUM(`count_finishes`) AS `count_finishes`, SUM(`count_smses`) AS `count_smses`";
+  $sum = "SUM(`count_free_starts`) AS `count_free_starts`, SUM(`count_free_finishes`) AS `count_free_finishes`, SUM(`count_starts`) AS `count_starts`, SUM(`count_finishes`) AS `count_finishes`, SUM(`count_smses`) AS `count_smses`, SUM(`partner_earning`) AS `partner_earning`";
   $daily_stats = query('DailyStatistics', "SELECT `day`, $sum FROM _T_ WHERE `day` >= DATE_ADD(NOW(), INTERVAL -1 MONTH) AND `partner_id`='%s' GROUP BY `day` ORDER BY `day`", $current_user->id);
   
   $test_stats = query('DailyStatistics', "SELECT `test_id`, $sum FROM _T_ WHERE `day` >= DATE_ADD(NOW(), INTERVAL -1 MONTH) AND `partner_id`='%s' GROUP BY `test_id`", $current_user->id);

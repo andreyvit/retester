@@ -10,7 +10,8 @@
           %th % окончили тест в бесплатном режиме
           %th % окончили тест, но не отправили СМС
           %th % отправили СМС
-          %th.last СМС получено
+          %th СМС получено
+          %th Заработок
         - foreach($daily_stats as $stat)
           %tr
             %td.first= $stat->day
@@ -20,6 +21,7 @@
             %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
             %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
             %td= $stat->count_smses
+            %td= $stat->partner_earning
               
     %h2.title Статистика по тестам за месяц
     .inner
@@ -31,7 +33,8 @@
           %th % окончили тест в бесплатном режиме
           %th % окончили тест, но не отправили СМС
           %th % отправили СМС
-          %th.last СМС получено
+          %th СМС получено
+          %th Заработок
         - foreach($test_stats as $stat)
           %tr
             %td.first= $stat->test_name
@@ -41,3 +44,4 @@
             %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
             %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
             %td= $stat->count_smses
+            %td= $stat->partner_earning

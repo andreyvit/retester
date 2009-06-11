@@ -171,6 +171,7 @@ class DailyStatistics {
   var $day, $partner_id, $test_id;
   var $count_free_starts, $count_free_finishes;
   var $count_starts, $count_finishes, $count_smses;
+  var $service_earning, $partner_earning;
 }
 
 class TestResult {
