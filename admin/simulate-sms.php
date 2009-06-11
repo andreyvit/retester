@@ -7,12 +7,48 @@
 </head>
 <body>
   
-  <p>
-    <a target="smstarget" href="../x-sms-a1.php?user_id=71111111111&num=1121&cost=4.61134054658&cost_rur=170.18199&msg=%2Bresult+QWE&skey=de883cf3aeb6245d985238ee1477c76d&operator_id=299&date=2009-06-10+16%3A03%3A05&smsid=1338786537&msg_trans=%2Bresult+QWE&operator=operator&test=1&ran=5&try=1&country_id=45909&sign=371e4fc41fb27e945f60b204b239c88a"onclick="$('#target').effect('highlight'); $('#target').reload();">Отправить СМС</a>
-  </p>
+  <form action="../x-sms-a1.php" method="GET">
+    <table>
+      <tr>
+        <td><label for="user_id">Телефон абонента:</label></td>
+        <td><input id="user_id" name="user_id" value="71111111111" /></td>
+      </tr>
+      <tr>
+        <td><label for="user_id">Короткий номер:</label></td>
+        <td><input id="user_id" name="user_id" value="1121" /></td>
+      </tr>
+      <tr>
+        <td><label for="cost">Стоимость:</label></td>
+        <td><input id="cost" name="cost" value="4.61134054658" /></td>
+      </tr>
+      <tr>
+        <td><label for="msg">Сообщение:</label></td>
+        <td><input id="msg" name="msg" value="+result QWER" /></td>
+      </tr>
+      <tr>
+        <td><label for="operator_id">ID оператора:</label></td>
+        <td><input id="operator_id" name="operator_id" value="299" /></td>
+      </tr>
+      <tr>
+        <td><label for="ran">Надежность:</label></td>
+        <td><input id="ran" name="ran" value="5" /></td>
+      </tr>
+    </table>
+    <p><input type="submit" value="Отправить" /></p>
+  </form>
   
   <div>
     <iframe id="target" name="smstarget">
     </iframe>
   </div>
+  
+  <script>
+    jQuery(function($) {
+      $('form').submit(function(event) {
+        event.preventDefault();
+        $('#target').attr('src', this.action + '?' + $(this).serialize()).effect('highlight');
+        return false;
+      });
+    });
+  </script>
 </body>

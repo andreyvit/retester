@@ -56,6 +56,8 @@ create table sessions (
   answer_count int not null default 0,
   started_at timestamp not null default current_timestamp,
   finished_at timestamp null,
+  sms_chal varchar(10) null,
+  sms_resp varchar(10) null,
   sms_received_at timestamp null
 );
 
@@ -83,7 +85,8 @@ create table smses (
   fee decimal(12,4) null,
   fee_curr varchar(3) null,
   service_earning decimal(12,4) not null,
-  partner_earning decimal(12,4) not null
+  partner_earning decimal(12,4) not null,
+  status int not null default 0
 );
 
 insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'sms_points_printer.php', 1);

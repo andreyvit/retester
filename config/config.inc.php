@@ -9,5 +9,6 @@ define('REATESTER_SMS_CHAL_LENGTH', 4);
 define('REATESTER_SMS_RESP_LENGTH', 4);
 
 define('REATESTER_SMS_PREFIX', '+result');
+define('REATESTER_SMS_CAN_BE_SENT_IN_HOURS', 24);
 
 ?>

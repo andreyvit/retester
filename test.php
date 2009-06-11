@@ -59,7 +59,13 @@ function run_handler(&$RES, $test, $answered_question_id, $answer_id) {
   }
   if ($action == 'finish') {
     $RES->finished = true;
-    stat_test_finished($RES->session_id, $test->id, $RES->partner_id, $RES->day, $answered_question_id, $answer_id, $RES->paid);
+    if ($RES->paid) {
+      $RES->sms_chal = random_string(REATESTER_SMS_CHAL_LENGTH);
+      $RES->sms_resp = random_string(REATESTER_SMS_RESP_LENGTH);
+    } else {
+      $RES->sms_chal = $RES->sms_resp = null;
+    }
+    stat_test_finished($RES->session_id, $test->id, $RES->partner_id, $RES->day, $answered_question_id, $answer_id, $RES->paid, $RES->sms_chal, $RES->sms_resp);
     redirect("test.php?test_id=$test->id");
     die();
   }
@@ -127,14 +133,9 @@ if (!isset($RES->question_no)) {
   $question = run_handler($RES, $test, null, null);
   $RES->session_id = stat_test_started($test->id, $RES->partner_id, $RES->day, $question->id, $RES->paid);
 } else if ($RES->finished) {
-  if (!isset($RES->sms_chal)) {
-    $RES->sms_chal = random_string(REATESTER_SMS_CHAL_LENGTH);
-    $RES->sms_resp = random_string(REATESTER_SMS_RESP_LENGTH);
-    $RES->sms_received = false;
-  }
-  
-  if ($test->sms_enabled) {
-    if ($RES->sms_received)
+  if ($RES->paid) {
+    $session = get('TestSession', "WHERE id = '%s'", $RES->session_id);
+    if (!$session || $session->sms_received_at)
       $full = true;
     else {
       $full = false;

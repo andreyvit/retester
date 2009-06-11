@@ -186,8 +186,10 @@ class QuestionResult {
 class TestSession extends Model {
   var $table_name = 'sessions';
   
+  var $id;
   var $partner_id, $test_id, $bounce_question_id;
   var $paid, $answer_count, $started_at, $finished_at, $sms_received_at;
+  var $sms_chal, $sms_resp;
 }
 
 class SMS extends Model {
@@ -195,6 +197,12 @@ class SMS extends Model {
   
   var $id, $smsid, $carrier_id, $service_phone, $user_phone, $msg, $suffix, $confidence_rate;
   var $fee, $fee_curr, $service_earning, $partner_earning;
+  var $status;
 }
+
+define('SMS_STATUS_PROCESSING', 0);
+define('SMS_STATUS_OK', 1);
+define('SMS_STATUS_INVALID_SUFFIX_FORMAT', 10);
+define('SMS_STATUS_SESSION_NOT_FOUND', 11);
 
 ?>

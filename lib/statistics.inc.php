@@ -31,8 +31,8 @@ function stat_question_answered($session_id, $test_id, $partner_id, $day, $prev_
   execute("UPDATE `answers` SET `count_answers`=`count_answers`+1 WHERE `id`='%s'", $answer_id);
 }
 
-function stat_test_finished($session_id, $test_id, $partner_id, $day, $prev_question_id, $answer_id, $paid) {
-  execute("UPDATE `sessions` SET `bounce_question_id`=0, `answer_count`=`answer_count`+1, `finished_at`=NOW() WHERE `id`='%s'", $session_id);
+function stat_test_finished($session_id, $test_id, $partner_id, $day, $prev_question_id, $answer_id, $paid, $sms_chal, $sms_resp) {
+  execute("UPDATE `sessions` SET `bounce_question_id`=0, `answer_count`=`answer_count`+1, `finished_at`=NOW(), `sms_chal`='%s', `sms_resp`='%s' WHERE `id`='%s'", $sms_chal, $sms_resp, $session_id);
   execute("UPDATE `questions` SET `count_bounces`=`count_bounces`-1, `count_answers`=`count_answers`+1 WHERE `id`='%s'", $prev_question_id);
   execute("UPDATE `answers` SET `count_answers`=`count_answers`+1 WHERE `id`='%s'", $answer_id);
   

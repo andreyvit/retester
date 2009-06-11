@@ -4,6 +4,7 @@ require_once('lib/common.inc.php');
 
 define('SMS_REPLY_INVALID_PREFIX', "Извините, неверный префикс у СМС-сообщения. Должно быть " . REATESTER_SMS_PREFIX . " вашкод, а вы отправили: %s");
 define('SMS_REPLY_OK', 'Ваш пароль: %s');
+define('SMS_REPLY_WRONG_SUFFIX_FORMAT', "Неверное сообщение: должно быть ".REATESTER_SMS_PREFIX.", затем пробел и ".REATESTER_SMS_CHAL_LENGTH." буквы или цифры. Вы отправили: %s");
 define('SMS_REPLY_WRONG_SUFFIX', "Неверный суффикс.");
 
 global $smsid;
@@ -40,26 +41,25 @@ if(substr($sms->suffix, 0, strlen(REATESTER_SMS_PREFIX)) != REATESTER_SMS_PREFIX
   reply();
 }
 $sms->suffix = trim(substr($sms->suffix, strlen(REATESTER_SMS_PREFIX)));
-
+$sms->status = SMS_STATUS_PROCESSING;
+$sms->put();
 
 /************************************************************************************
  Распознавание суффикса
 ************************************************************************************/
 
-if(strlen($suffix) != strlen(REATESTER_SMS_CHAL_LENGTH)) {
+if(strlen($sms->suffix) != REATESTER_SMS_CHAL_LENGTH) {
+  $sms->status = SMS_STATUS_INVALID_SUFFIX_FORMAT;
+  $sms->put();
+  reply(sprintf(SMS_REPLY_WRONG_SUFFIX_FORMAT, $sms->msg));
+}
+
+$session = get('TestSession', "WHERE sms_chal = '%s' AND sms_received_at IS NULL AND finished_at >= DATE_SUB(NOW(), INTERVAL ".REATESTER_SMS_CAN_BE_SENT_IN_HOURS." HOUR)", $sms->suffix);
+if (!$session) {
+  $sms->status = SMS_STATUS_SESSION_NOT_FOUND;
   $sms->put();
   reply(SMS_REPLY_WRONG_SUFFIX);
 }
-
-
-//$status   = intval($row['status']);
-//$id       = intval($row['id']);
-//$password = $row['password'];
-//$wmid     = $row['wmid'];
-
-//if ($status != WAITING_SMS) {
-//  reply(SMS_REPLY_USED_SUFFIX);
-//}
 
 
 /************************************************************************************
@@ -94,12 +94,16 @@ if(strlen($suffix) != strlen(REATESTER_SMS_CHAL_LENGTH)) {
  Сохранение информации об СМСке
 ************************************************************************************/
 
+$session->sms_received_at = time();
+$session->put();
+
+$sms->status = SMS_STATUS_OK;
 $sms->put();
 
 /************************************************************************************
  Готово
 ************************************************************************************/
 
-reply(sprintf(SMS_REPLY_OK, "XXX"));
+reply(sprintf(SMS_REPLY_OK, $session->sms_resp));
 
 ?>
