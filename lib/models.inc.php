@@ -102,6 +102,7 @@ class Partner extends Model {
   var $id, $email, $first_name, $last_name, $middle_name, $phone, $icq, $wmid;
   var $password_salt, $password_hash; // NOT form fields
   var $form_fields = array('email', 'first_name', 'last_name', 'middle_name', 'phone', 'icq', 'wmid');
+  var $earning_percent;
   
   var $loginkit__tags = array('partner+');
   
@@ -187,7 +188,7 @@ class TestSession extends Model {
   var $table_name = 'sessions';
   
   var $id;
-  var $partner_id, $test_id, $bounce_question_id;
+  var $partner_id, $test_id, $day, $bounce_question_id;
   var $paid, $answer_count, $started_at, $finished_at, $sms_received_at;
   var $sms_chal, $sms_resp;
 }

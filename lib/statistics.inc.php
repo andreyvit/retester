@@ -19,8 +19,8 @@ function stat_test_started($test_id, $partner_id, $day, $next_question_id, $paid
   
   execute("UPDATE `questions` SET `count_bounces`=`count_bounces`+1 WHERE `id`='%s'", $next_question_id);
   
-  execute("INSERT INTO `sessions`(`partner_id`, `test_id`, `bounce_question_id`, `paid`) VALUES ('%s', '%s', '%s', '%s')",
-      $partner_id, $test_id, $next_question_id, $paid);
+  execute("INSERT INTO `sessions`(`partner_id`, `test_id`, `day`, `bounce_question_id`, `paid`) VALUES ('%s', '%s', '%s', '%s', '%s')",
+      $partner_id, $test_id, $day, $next_question_id, $paid);
   return mysql_insert_id();
 }
 
@@ -40,9 +40,9 @@ function stat_test_finished($session_id, $test_id, $partner_id, $day, $prev_ques
   execute("UPDATE `daily_statistics` SET `$field`=`$field`+1 WHERE `day`='%s' AND `partner_id`='%s' AND `test_id`='%s'", $day, $partner_id, $test_id);
 }
 
-function stat_sms_received($session_id, $test_id, $partner_id, $day, $paid) {
-  execute("UPDATE `sessions` SET `sms_received_at`=NOW() WHERE `id`='%s'", $session_id);
-  execute("UPDATE `daily_statistics` SET `count_smses`=`count_smses`+1 WHERE `day`='%s' AND `partner_id`='%s' AND `test_id`='%s'", $day, $partner_id, $test_id);
+function stat_sms_received($session_id, $test_id, $partner_id, $day, $paid, $service_earning, $partner_earning) {
+  execute("UPDATE `sessions` SET `sms_received_at`=NOW(), `service_earning`=`service_earning`+'%s', `partner_earning`=`partner_earning`+'%s' WHERE `id`='%s'", $service_earning, $partner_earning, $session_id);
+  execute("UPDATE `daily_statistics` SET `count_smses`=`count_smses`+1, `service_earning`=`service_earning`+'%s', `partner_earning`=`partner_earning`+'%s' WHERE `day`='%s' AND `partner_id`='%s' AND `test_id`='%s'", $service_earning, $partner_earning, $day, $partner_id, $test_id);
 }
 
 ?>

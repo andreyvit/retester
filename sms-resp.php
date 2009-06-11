@@ -28,6 +28,5 @@ if (strtoupper($resp) != strtoupper($RES->sms_resp)) {
   die();
 }
 
-$RES->sms_received = true;
-stat_sms_received($RES->session_id, $test->id, $RES->partner_id, $RES->day, $RES->paid);
+$RES->sms_password_entered = true;
 redirect("test.php?test_id=$test->id");

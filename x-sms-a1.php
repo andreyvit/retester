@@ -94,11 +94,15 @@ if (!$session) {
  Сохранение информации об СМСке
 ************************************************************************************/
 
-$session->sms_received_at = time();
-$session->put();
+$partner = $session->partner;
+
+if ($parner)
+  $sms->partner_earning = $partner->earning_percent / 100.0 * $sms->service_earning;
 
 $sms->status = SMS_STATUS_OK;
 $sms->put();
+
+stat_sms_received($session->id, $session->test_id, $session->partner_id, $session->day, $session->paid, $sms->service_earning, $sms->partner_earning);
 
 /************************************************************************************
  Готово

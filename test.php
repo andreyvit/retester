@@ -126,6 +126,7 @@ if (!isset($RES->question_no)) {
   $RES->day = strftime("%Y-%m-%d");
   // be nice to the user (and to the statistics), save sms_enabled at the start of test in case it is changed later
   $RES->paid = $test->sms_enabled;
+  $RES->sms_password_entered = false;
   include($test->handler_file());
   if (!function_exists('next_action'))
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
@@ -134,8 +135,7 @@ if (!isset($RES->question_no)) {
   $RES->session_id = stat_test_started($test->id, $RES->partner_id, $RES->day, $question->id, $RES->paid);
 } else if ($RES->finished) {
   if ($RES->paid) {
-    $session = get('TestSession', "WHERE id = '%s'", $RES->session_id);
-    if (!$session || $session->sms_received_at)
+    if ($RES->sms_password_entered)
       $full = true;
     else {
       $full = false;

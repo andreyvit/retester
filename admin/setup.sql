@@ -44,13 +44,15 @@ create table partners (
   middle_name varchar(255) not null,
   phone varchar(255) not null,
   icq varchar(255) not null,
-  wmid varchar(255) not null
+  wmid varchar(255) not null,
+  earning_percent decimal(12,4) not null default '70'
 );
 
 create table sessions (
   id int auto_increment not null primary key,
   partner_id int not null, /* 0 for none */
   test_id int not null,
+  day date not null,
   bounce_question_id int not null,
   paid tinyint not null,
   answer_count int not null default 0,
@@ -58,7 +60,9 @@ create table sessions (
   finished_at timestamp null,
   sms_chal varchar(10) null,
   sms_resp varchar(10) null,
-  sms_received_at timestamp null
+  sms_received_at timestamp null,
+  service_earning decimal(12,4) not null default 0,
+  partner_earning decimal(12,4) not null default 0
 );
 
 create table daily_statistics (
@@ -70,6 +74,8 @@ create table daily_statistics (
   count_starts int not null default 0,
   count_finishes int not null default 0,
   count_smses int not null default 0,
+  service_earning decimal(12,4) not null default 0,
+  partner_earning decimal(12,4) not null default 0,
   primary key (day, partner_id, test_id)
 );
 
