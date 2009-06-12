@@ -95,6 +95,16 @@ create table smses (
   status int not null default 0
 );
 
+create table transfers (
+  id int not null auto_increment primary key,
+  partner_id int not null,
+  created_at datetime not null,
+  created_by varchar(20) not null,
+  deleted_at datetime null,
+  deleted_by varchar(20) null,
+  amount decimal(12,4) not null
+);
+
 insert into tests(name, design_file, handler_file, finisher_file, sms_enabled) values ("IQ-тест", 'stupid_design.php', 'random_order.php', 'sms_points_printer.php', 1);
 set @test_id = last_insert_id();
 
