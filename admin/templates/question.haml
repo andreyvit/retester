@@ -1,9 +1,9 @@
 %tr[$question]
   %td
-    %span.handle <img src="../images/move.png" width="19" height="19" />
+    %span.handle <img src="/images/move.png" width="19" height="19" />
   %td
     %input{ :name => "question_order[".$question->id."]", :value => $question->order }.order
     %span.text= $question->text
   %td= $question->answer_count
   %td
-    %span.remove_question <img src="../images/delete.gif" width="16" height="16" />
+    %span.remove_question <img src="/images/delete.gif" width="16" height="16" />

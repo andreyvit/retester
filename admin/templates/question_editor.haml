@@ -1,9 +1,7 @@
 %tr{ :id=>"question_".$question->id."_editor", :class=>'editor' }
   %td &nbsp;
   %td{ :colspan => 3 }
-    %form.question_editor{ :method => 'POST', :action => 'question_editor.php' }
-      %input{ :type => 'hidden', :name => 'question_id', :value => $question->id }
-      %input{ :type => 'hidden', :name => 'test_id', :value => $question->test_id }
+    %form.question_editor{ :method => 'POST', :action => '/admin/tests/$question->test_id/questions/$question->id/' }
       %img.fileupload{ :id => 'question_image', :src=>$question->image_file_or_placeholder(), :style=>'float:left; width: 75px; height: 75px;' }
       %input{ :type=>'hidden', :id=>'question_image_code', :name=>'question_image_code', :value=>$question->image_code }
       %textarea{ :name => 'question_text', :rows => 4, :cols => 80 }= $question->text
@@ -13,11 +11,11 @@
         - foreach($answers as $answer)
           %li{ :style=>'margin:10px 0px' }
             %input{ :type=>'hidden', :id=>"ans_".$answer->id."_image_code", :name=>"ans_".$answer->id."_image_code", :value=>$answer->image_code }
-            %span.handle <img src="../images/move.png" width="15" height="15" />
+            %span.handle <img src="/images/move.png" width="15" height="15" />
             %img.fileupload{ :id => "ans_".$answer->id."_image", :src=>$answer->image_file_or_placeholder(), :style=>'width: 25px; height: 25px; position:relative; top:5px;' }
             %input{ :name => "ans_".$answer->id."_text", :size => 60, :value => $answer->text }
             %input{ :name => "ans_".$answer->id."_order", :size => 2, :value => $answer->order }
-            %span.remove_answer <img src="../images/delete.gif" width="16" height="16" />
+            %span.remove_answer <img src="/images/delete.gif" width="16" height="16" />
             %span.correct
               %input{ :name => "ans_".$answer->id."_points", :id => "ans_".$answer->id."_points", :size => "4", :value => intval($answer->points) }
       .clear

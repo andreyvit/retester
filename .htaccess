@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /
+RewriteRule  ^tests/$                                       index.php                                         [QSA]
+RewriteRule  ^tests/([0-9]+)/$                              test.php?test_id=$1                               [QSA]
+RewriteRule  ^tests/([0-9]+)/P([0-9]+)$                     test.php?test_id=$1&partner_id=$2                 [QSA]
+RewriteRule  ^admin/recent/$                                admin/recent.php                                  [QSA]
+RewriteRule  ^admin/statistics/$                            admin/statistics.php                              [QSA]
+RewriteRule  ^admin/tests/$                                 admin/index.php                                   [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/$                        admin/test-settings.php?test_id=$1                [QSA]
+RewriteRule  ^admin/tests/([0-9]+)?/files/$                 admin/files.php?test_id=$1                        [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/questions/$              admin/test.php?test_id=$1                         [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/questions/([0-9]+)/$     admin/question.php?test_id=$1&question_id=$2      [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/questions/([0-9]+)/delete$ admin/delete-question.php?test_id=$1&question_id=$2      [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/questions/([0-9]+|new)/edit$ admin/question_editor.php?test_id=$1&question_id=$2 [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/questions/reorder/$      admin/reorder-questions.php?test_id=$1            [QSA]
+RewriteRule  ^admin/tests/([0-9]+)/delete$                  admin/test-delete.php?test_id=$1                  [QSA]
+RewriteRule  ^admin/tests/new/$                             admin/test-editor.php                             [QSA]
+RewriteRule  ^admin/upload-image/$                          admin/upload.php                                  [QSA]

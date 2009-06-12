@@ -9,7 +9,7 @@
     ob_start();
     include_once('filemanager/class/FileManager.php');
     $FileManager = new FileManager("../data/$dir");
-    $FileManager->fmWebPath = "./filemanager/";
+    $FileManager->fmWebPath = "/admin/filemanager/";
     $FileManager->enablePermissions = false;
     $FileManager->createBackups = false;
     $FileManager->logHeight = 0;

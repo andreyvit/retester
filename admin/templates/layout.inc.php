@@ -9,10 +9,10 @@ function tab($name) {
 <head>
   <title><?= $title ?></title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
-  <script src="../javascripts/jquery.livequery.js"></script>
-  <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
+  <script src="/javascripts/jquery.livequery.js"></script>
+  <link rel="stylesheet" href="/stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
   <div id="container">
@@ -26,13 +26,13 @@ function tab($name) {
       </div>      
       <div id="main-navigation">
         <ul>
-          <li class="<?=tab('recent')?>"><a href="recent.php?test_id=<?=$_REQUEST['test_id']?>">Недавно</a></li>
-          <li class="<?=tab('statistics')?>"><a href="statistics.php?test_id=<?=$_REQUEST['test_id']?>">Статистика</a></li>
-          <li class="<?=tab('all-tests')?> first"><a href="index.php?test_id=<?=$_REQUEST['test_id']?>">Выбор теста</a></li>
-          <li class="<?=tab('files')?>"><a href="files.php?test_id=<?=$_REQUEST['test_id']?>">Файлы</a></li>
+          <li class="<?=tab('recent')?>"><a href="/admin/recent/?test_id=<?=$_REQUEST['test_id']?>">Недавно</a></li>
+          <li class="<?=tab('statistics')?>"><a href="/admin/statistics/?test_id=<?=$_REQUEST['test_id']?>">Статистика</a></li>
+          <li class="<?=tab('all-tests')?> first"><a href="/admin/tests/?test_id=<?=$_REQUEST['test_id']?>">Выбор теста</a></li>
+          <li class="<?=tab('files')?>"><a href="/admin/tests/<?=$_REQUEST['test_id']?>/files/">Файлы</a></li>
           <? if($_REQUEST['test_id']): ?>
-          <li class="<?=tab('test-settings')?>"><a href="test-settings.php?test_id=<?=$_REQUEST['test_id']?>">Настройки теста</a></li>
-          <li class="<?=tab('questions')?>"><a href="test.php?test_id=<?=$_REQUEST['test_id']?>">Вопросы</a></li>
+          <li class="<?=tab('test-settings')?>"><a href="/admin/tests/<?=$_REQUEST['test_id']?>/">Настройки теста</a></li>
+          <li class="<?=tab('questions')?>"><a href="/admin/tests/<?=$_REQUEST['test_id']?>/questions/">Вопросы</a></li>
           <? endif; ?>
         </ul>
         <div class="clear"></div>

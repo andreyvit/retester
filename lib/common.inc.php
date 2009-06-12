@@ -1,6 +1,6 @@
 <?php
 
-define('WEB_ROOT', (strstr($_SERVER['PHP_SELF'], "admin") ? ".." : "."));
+define('WEB_ROOT', '/'); //(strstr($_SERVER['PHP_SELF'], "admin") ? ".." : "."));
 define('SITE_ROOT', dirname(__FILE__).'/..');
 set_include_path(get_include_path() . PATH_SEPARATOR . SITE_ROOT);
 

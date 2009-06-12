@@ -22,7 +22,7 @@ $startDir = "../../data";
 
 // FileManager WEB path (example: [http://domain]/tools/filemanager)
 // Only set this if FileManager doesn't view properly!
-$fmWebPath = ".";
+$fmWebPath = "/admin/filemanager";
 
 // FileManager width (pixels)
 $fmWidth = 600;

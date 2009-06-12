@@ -1,9 +1,9 @@
-%script{ :src => '../javascripts/list.js' }
+%script{ :src => '/javascripts/list.js' }
 .block
   .content
     %h2.title Выбор текущего теста
     .inner
-      %form#new_test_form{ :method => 'POST', :action => 'test-editor.php' }
+      %form#new_test_form{ :method => 'POST', :action => '/admin/tests/new/' }
         %table.table
           %tr
             %th.first &nbsp;
@@ -13,7 +13,7 @@
             - foreach($tests as $test)
               %tr[$test]
                 %td.first
-                  %input{ :type=>"radio", :id=>"active_test_$test->id", :name=>"active_test", :value=>"$test->id", :checked=>($test->id == $active_test_id ? "checked" : ""), :onclick=>"window.location.href='test.php?test_id=$test->id'" }
+                  %input{ :type=>"radio", :id=>"active_test_$test->id", :name=>"active_test", :value=>"$test->id", :checked=>($test->id == $active_test_id ? "checked" : ""), :onclick=>"window.location.href='/admin/tests/$test->id/'" }
                 %td
                   %label{ :for=>"active_test_$test->id" }
                     - if($test->name)
@@ -22,11 +22,11 @@
                       (безымянный)
                 %td= $test->question_count
                 %td.last
-                  %a{ :href=>"../test.php?test_id=$test->id" } пройти тест
+                  %a{ :href=>"/tests/$test->id/" } пройти тест
                   &nbsp;&nbsp;
                   - $func = "return deleteTest(".$test->id.", '".htmlspecialchars(addslashes($test->name))."')";
                   %a{ :href=>"#", :onclick=>$func }
-                    %img{ :src => "../images/delete.gif", :width => "16", :height => "16", :title=>"Удалить «".htmlspecialchars($test->name)."»" }
+                    %img{ :src => "/images/delete.gif", :width => "16", :height => "16", :title=>"Удалить «".htmlspecialchars($test->name)."»" }
             %tr#new_test_editor
               / { :style => 'display: none' }
               %td &nbsp;

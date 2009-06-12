@@ -64,11 +64,12 @@
     $question = new Question();
     $question->id = 'new';
     $question->test_id = $_REQUEST['test_id'];
+    $question->wakeup();
     $answers = array();
   } else {
     if (!($question = get('Question', "WHERE id = %s", $id)))
       redirect("/", "Извините, этот вопрос уже удален.");
-    $title = "$question->name";
+    $title = "$question->text";
     $answers = query('Answer', "WHERE question_id = %s ORDER BY `order`", $question->id);
   }
   $max_answer_order = 0;
@@ -79,6 +80,7 @@
     $answer = new Answer();
     $answer->order = $max_answer_order + $i;
     $answer->id = "new".$i;
+    $answer->wakeup();
     $answers[] = $answer;
   }
   

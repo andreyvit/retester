@@ -219,7 +219,7 @@ Ajax_upload = AjaxUpload = function(button, options){
 					
 	this._settings = {
 		// Location of the server-side upload script
-		action: 'upload.php',			
+		action: '/admin/upload-image/',			
 		// File upload name
 		name: 'userfile',
 		// Additional data to send

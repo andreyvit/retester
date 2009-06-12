@@ -51,13 +51,13 @@ class Question extends Model {
   
   function image_file_or_placeholder() {
     if (empty($this->image_file))
-      return WEB_ROOT."/images/placeholder.png";
+      return "/images/placeholder.png";
     else
       return $this->image_path();
   }
   
   function image_path() {
-    return WEB_ROOT."/data/images/{$this->image_file}";
+    return "/data/images/{$this->image_file}";
   }
   
 }
@@ -81,13 +81,13 @@ class Answer extends Model {
   
   function image_file_or_placeholder() {
     if (empty($this->image_file))
-      return WEB_ROOT."/images/placeholder.png";
+      return "/images/placeholder.png";
     else
       return $this->image_path();
   }
 
   function image_path() {
-    return WEB_ROOT."/data/images/{$this->image_file}";
+    return "/data/images/{$this->image_file}";
   }
 
   function image_code() {
