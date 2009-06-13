@@ -30,7 +30,7 @@ function run_handler(&$RES, $test, $answered_question_id, $answer_id) {
     $action = 'finish';
     
   $answered_question_ids = collect_attrs($RES->answers, 'question_id');
-  $id_cond = (empty($answered_question_ids) ? "TRUE" : "`id` NOT IN %s");
+  $id_cond = (empty($answered_question_ids) ? "TRUE" : "`id` NOT IN ?");
   if (is_integer($action)) {
     $t = DBkitModel::get("SELECT MIN(`order`) AS `order` FROM `questions` WHERE `test_id`=%d AND `order`>=%d AND $id_cond",
       $test->id, $action, $answered_question_ids);

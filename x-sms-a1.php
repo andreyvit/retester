@@ -54,7 +54,7 @@ if(strlen($sms->suffix) != REATESTER_SMS_CHAL_LENGTH) {
   reply(sprintf(SMS_REPLY_WRONG_SUFFIX_FORMAT, $sms->msg));
 }
 
-$session = TestSession::get("WHERE sms_chal = '%s' AND sms_received_at IS NULL AND finished_at >= DATE_SUB(NOW(), INTERVAL ".REATESTER_SMS_CAN_BE_SENT_IN_HOURS." HOUR)", $sms->suffix);
+$session = TestSession::get("WHERE sms_chal = ? AND sms_received_at IS NULL AND finished_at >= DATE_SUB(NOW(), INTERVAL ".REATESTER_SMS_CAN_BE_SENT_IN_HOURS." HOUR)", $sms->suffix);
 if (!$session) {
   $sms->status = SMS_STATUS_SESSION_NOT_FOUND;
   $sms->put();
@@ -68,7 +68,7 @@ if (!$session) {
 ************************************************************************************/
 
 //$sql = sprintf(
-//	"SELECT user_phone FROM passwords WHERE wmid = '%s' AND received_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR) GROUP BY user_phone",
+//	"SELECT user_phone FROM passwords WHERE wmid = ? AND received_at >= DATE_SUB(NOW(), INTERVAL 1 HOUR) GROUP BY user_phone",
 //	mysql_real_escape_string($wmid));
 //$result = mysql_query($sql);
 //if (!$result) {

@@ -46,12 +46,13 @@ function dbkit_run_query_with_array($sql, $args) {
       if (count($arg) == 0) $arg = array(-1);
       $parts = array();
       foreach ($arg as $part)
-        $parts[] = mysql_real_escape_string("$part");
+        $parts[] = "'" . mysql_real_escape_string("$part") . "'";
       $arg = "(" . implode(",", $parts) . ")";
     } else {
-      $arg = mysql_real_escape_string("$arg");
+      $arg = "'" . mysql_real_escape_string("$arg") . "'";
     }
   }
+  $sql = str_replace("?", "%s", $sql);
   array_unshift($args, $sql);
   $sql = call_user_func_array('sprintf', $args);
   dbkit_log_query($sql);
@@ -113,7 +114,7 @@ class DBkitModel {
     
     $id = $_REQUEST[$request_param_name];
     if (is_null($scope_var_name)) {
-      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = '%s'", $id);
+      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = ?", $id);
     } else {
       if (is_null($scope_foreign_key))
          $scope_foreign_key = $scope_var_name."_id";
@@ -122,7 +123,7 @@ class DBkitModel {
       $scope = $GLOBALS[$scope_var_name];
       if (empty($scope->id))
         die("$scope_var_name->id is not defined");
-      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = '%s' AND `$scope_foreign_key` = '%s'", $id, $scope->id);
+      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = ? AND `$scope_foreign_key` = ?", $id, $scope->id);
     }
     
     if (!$result && !is_null($deleted_flash_message)) {
@@ -132,7 +133,7 @@ class DBkitModel {
     return $result;
   }
 
-  // call via descendant, i.e. MyModel::query("WHERE id='%s'", 12)
+  // call via descendant, i.e. MyModel::query("WHERE id=?", 12)
   function query($sql /*, $arg... */) {
     $args = func_get_args();
     array_shift($args);
@@ -271,7 +272,7 @@ class DBkitModel {
   
   function delete() {
     if ($this->is_saved()) {
-      dbkit_execute("DELETE FROM `$this->table_name` WHERE `id` = '%s'", $this->id);
+      dbkit_execute("DELETE FROM `$this->table_name` WHERE `id` = ?", $this->id);
       $this->delete_children();
       $this->id = null;
     }
@@ -284,9 +285,9 @@ class DBkitModel {
     if (isset($this->$id_name)) {
       $klass = isset($this->$class_name) ? $this->$class_name : dbkit_classify($name);
       if (!isset($this->dbkit__resultset))
-        $this->$name = get($klass, "WHERE `id`='%s'", $this->$id_name);
+        $this->$name = get($klass, "WHERE `id`=?", $this->$id_name);
       else {
-        $items = DBkitModel::query_indexed_with_klass($klass, "id", "WHERE `id` IN %s",
+        $items = DBkitModel::query_indexed_with_klass($klass, "id", "WHERE `id` IN ?",
             array_unique(dbkit_collect_attrs($this->dbkit__resultset, $id_name)));
         foreach($this->dbkit__resultset as $row)
           $row->$name = $items[$row->$id_name];
@@ -295,7 +296,7 @@ class DBkitModel {
     } else if (isset($this->$class_name)) {
       $klass = $this->$class_name;
       $fk = isset($this->$fk_name) ? $this->$fk_name : dbkit_tableize(get_class($this))."_id";
-      $this->$name = get($klass, "WHERE `$fk`='%s'", $this->id);
+      $this->$name = get($klass, "WHERE `$fk`=?", $this->id);
       return $this->$name;
     }
     $trace = debug_backtrace();
@@ -319,7 +320,7 @@ class DBkitModel {
   }
   
   function delete_children() {
-    // dbkit_execute("DELETE FROM child_items WHERE parent_id = '%s'", $this->id);
+    // dbkit_execute("DELETE FROM child_items WHERE parent_id = ?", $this->id);
   }
   
   // protected
@@ -417,7 +418,7 @@ class DBkitModel {
     $args = array();
     foreach($fields as $field) {
       $names[] = "`$field`";
-      $values[] = "'%s'";
+      $values[] = "?";
       $args[] = $this->$field;
     }
     $names = implode(", ", $names);
@@ -437,7 +438,7 @@ class DBkitModel {
     $sets = array();
     $args = array();
     foreach($fields as $field) {
-      $sets[] = "`$field`='%s'";
+      $sets[] = "`$field`=?";
       $args[] = $this->$field;
     }
     $sets = implode(", ", $sets);

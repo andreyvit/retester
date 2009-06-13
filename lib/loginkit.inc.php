@@ -35,7 +35,7 @@ function loginkit_start() {
     session_start();
   if (!isset($GLOBALS['current_user']))
     if(isset($_SESSION['user_kind']) && isset($_SESSION['user_id'])) {
-      $user = DBkitModel::get_with_klass($_SESSION['user_kind'], "WHERE `id` = '%s'", $_SESSION['user_id']);
+      $user = DBkitModel::get_with_klass($_SESSION['user_kind'], "WHERE `id` = ?", $_SESSION['user_id']);
       if (!$user)
         loginkit_log_out(LOGINKIT_ACCOUNT_DELETED_FLASH);
       $GLOBALS['current_user'] = $user;
@@ -181,7 +181,7 @@ function loginkit_process_login($model_name,
     $password = $_REQUEST['password'];
     setcookie(LOGINKIT_LAST_USERNAME_COOKIE, $name, time()+60*60*24*366 /* a year */);
     
-    $user = DBkitModel::get_with_klass($model_name, "WHERE `email` = '%s'", $name);
+    $user = DBkitModel::get_with_klass($model_name, "WHERE `email` = ?", $name);
     if (!$user) {
       $flash = $no_such_user_error;
     } else {

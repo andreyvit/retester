@@ -8,7 +8,7 @@ class Test extends DBkitModel {
   var $id, $name, $design_file, $handler_file, $finisher_file, $sms_enabled;
   
   function delete_children() {
-    $questions = Question::query("SELECT id FROM questions WHERE test_id = '%s'", $this->id);
+    $questions = Question::query("SELECT id FROM questions WHERE test_id = ?", $this->id);
     foreach ($questions as $q)
       $q->delete();
   }
@@ -33,8 +33,8 @@ class Question extends DBkitModel {
   var $id, $test_id, $text, $order, $image_file;
   
   function delete_children() {
-    dbkit_execute("DELETE FROM answers WHERE question_id = '%s'", $this->id);
-    dbkit_execute("DELETE FROM questions WHERE id = '%s'", $this->id);
+    dbkit_execute("DELETE FROM answers WHERE question_id = ?", $this->id);
+    dbkit_execute("DELETE FROM questions WHERE id = ?", $this->id);
   }
   
   function normalize_text($v) {
