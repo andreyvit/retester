@@ -26,6 +26,8 @@ function dbkit_collect_attrs($array, $attr) {
   
 class Model {
   
+  var $field_errors;
+  
   // public class methods
   
   function get_from_request(
@@ -215,7 +217,7 @@ class Model {
   // private
   
   function filter_out_special_fields($fields) {
-    return array_diff($fields, array("id", "created_at", "updated_at", "table_name", "form_fields"));
+    return array_diff($fields, array("id", "created_at", "updated_at", "table_name", "form_fields", "field_errors"));
   }
   
   function get_fields_for_insert() {
@@ -245,7 +247,7 @@ class Model {
       if (strstr($field, "__"))
         $field = false;
     $fields = array_filter($fields);
-    $fields = array_diff($fields, array("table_name", "form_fields"));
+    $fields = array_diff($fields, array("table_name", "form_fields", "field_errors"));
     foreach ($fields as &$field)
       if (in_array(substr($field, strlen($field)-3), array('_on', '_at')))
         $field = "UNIX_TIMESTAMP(`$field`) AS `$field`";
