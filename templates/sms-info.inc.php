@@ -26,7 +26,7 @@
     </span>
   </p>
   <div id="sms-response">
-	<form id="sms-resp-form" action="sms-resp.php?test_id=<?=$test->id?>" method="POST">
+	<form id="sms-resp-form" action="/tests/<?=$test->id?>/verify-sms" method="POST">
 	<? if($FLASH): ?>
 	  <p style="color:red"><?= htmlspecialchars($FLASH) ?></p>
 	<? else: ?>

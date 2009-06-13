@@ -11,8 +11,8 @@ function tab($name) {
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
-  <script src="../javascripts/jquery.livequery.js"></script>
-  <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
+  <script src="/javascripts/jquery.livequery.js"></script>
+  <link rel="stylesheet" href="/stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
   <div id="container">
@@ -20,8 +20,8 @@ function tab($name) {
       <h1><a href="#"><?= $title ?></a></h1>
       <div id="user-navigation">
         <ul>
-          <li><a href="login.php">Вход</a></li>
-          <li><a href="signup.php">Регистрация</a></li>
+          <li><a href="/partner/accounts/login/">Вход</a></li>
+          <li><a href="/partner/accounts/new/">Регистрация</a></li>
         </ul>
         <div class="clear"></div>
       </div>      

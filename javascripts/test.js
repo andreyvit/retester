@@ -86,8 +86,8 @@ jQuery(function($) {
   $('#delete_test').click(function() {
     if (!confirm("Отменить удаление будет невозможно. Удалить тест?"))
       return false;
-    $.post("test-delete.php", $('#test_id').serialize(), function() {
-      window.location.href = './';
+    $.post('/admin/tests/' + $('#test_id').val() + '/delete', {}, function() {
+      window.location.href = '/admin/';
     });
     return false;
   });

@@ -66,7 +66,7 @@ function run_handler(&$RES, $test, $answered_question_id, $answer_id) {
       $RES->sms_chal = $RES->sms_resp = null;
     }
     stat_test_finished($RES->session_id, $test->id, $RES->partner_id, $RES->day, $answered_question_id, $answer_id, $RES->paid, $RES->sms_chal, $RES->sms_resp);
-    redirect("test.php?test_id=$test->id");
+    redirect("/tests/$test->id/");
     die();
   }
   die("Internal error: invalid handler action '$action'");
@@ -79,7 +79,7 @@ if ($_POST) {
   }
   $RES =& $_SESSION['tests'][$test_id];
   if ($RES->finished) {
-    redirect("test.php?test_id=$test->id");
+    redirect("/tests/$test->id/");
     die();
   }
   
@@ -104,7 +104,7 @@ if ($_POST) {
   if (!function_exists('next_action'))
     die("Invalid handler $handler_file: a handler must define function next_action(\$RES, \$question_count)");
   $question = run_handler($RES, $test, ($question ? $question->id : 0), ($answer ? $answer->id : 0));
-  redirect("test.php?test_id=$test->id");
+  redirect("/tests/$test->id/");
   exit;
 }
 
@@ -116,8 +116,8 @@ if (!isset($_SESSION['tests'][$test_id])) {
 }
 $RES =& $_SESSION['tests'][$test_id];
 
-$again_url = "again.php?test_id=$test->id";
-$submit_url = "test.php?test_id=$test->id";
+$again_url = "/tests/$test->id/restart";
+$submit_url = "/tests/$test->id/";
 
 if (!isset($RES->question_no)) {
   // start of test

@@ -8,6 +8,6 @@ function partner_can_access_partner($partner) {
   return $current_user->id == $partner->id;
 }
 
-loginkit_set_logout_url('index.php');
+loginkit_set_logout_url('/');
 
 ?>

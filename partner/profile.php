@@ -10,7 +10,7 @@
     if ($partner->is_valid()) {
       $more = (loginkit_update_password_hash($partner) ? "Пароль изменен." : "");
       $partner->put();
-      redirect("profile.php", "+Изменения сохранены. $more");
+      redirect("/partner/accounts/current/edit", "+Изменения сохранены. $more");
     }
   }
 

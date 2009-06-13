@@ -11,8 +11,8 @@ function tab($name) {
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
-  <script src="../javascripts/jquery.livequery.js"></script>
-  <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
+  <script src="/javascripts/jquery.livequery.js"></script>
+  <link rel="stylesheet" href="/stylesheets/admin.css" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
   <div id="container">
@@ -21,22 +21,22 @@ function tab($name) {
       <div id="user-navigation">
         <ul>
           <? if(loginkit_is_anonymous()): ?>
-            <li><a href="login.php">Вход</a></li>
-            <li><a href="signup.php">Регистрация</a></li>
+            <li><a href="/partner/accounts/login/">Вход</a></li>
+            <li><a href="/partner/accounts/new/">Регистрация</a></li>
           <? else: ?>
-            <li><a href="profile.php"><?= htmlspecialchars(loginkit_current_user()->email) ?></a></li>
-            <li><a href="logout.php">Выход</a></li>
+            <li><a href="/partner/accounts/current/edit"><?= htmlspecialchars(loginkit_current_user()->email) ?></a></li>
+            <li><a href="/partner/accounts/logout/">Выход</a></li>
           <? endif; ?>
         </ul>
         <div class="clear"></div>
       </div>      
       <div id="main-navigation">
         <ul>
-          <li class="<?=tab('all-tests')?> first"><a href="index.php">Партнерам</a></li>
-          <li class="<?=tab('profile')?>"><a href="profile.php">Профиль</a></li>
-          <li class="<?=tab('banners')?>"><a href="banners.php">Баннеры</a></li>
-          <li class="<?=tab('statistics')?>"><a href="statistics.php">Статистика</a></li>
-          <li class="<?=tab('questions')?>"><a href="payments.php">Выплаты</a></li>
+          <li class="<?=tab('all-tests')?> first"><a href="/partner/">Партнерам</a></li>
+          <li class="<?=tab('profile')?>"><a href="/partner/accounts/current/edit">Профиль</a></li>
+          <li class="<?=tab('banners')?>"><a href="/partner/banners/">Баннеры</a></li>
+          <li class="<?=tab('statistics')?>"><a href="/partner/statistics/">Статистика</a></li>
+          <li class="<?=tab('questions')?>"><a href="/partner/payments/">Выплаты</a></li>
           <? if($_REQUEST['test_id']): ?>
           <? endif; ?>
         </ul>

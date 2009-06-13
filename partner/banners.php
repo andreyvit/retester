@@ -7,9 +7,8 @@
 
   $tests = query('Test', "SELECT id, name FROM tests ORDER BY name");
   $host = $_SERVER['HTTP_HOST'];
-  $path = dirname(dirname($_SERVER['PHP_SELF']));
   foreach ($tests as &$test) {
-    $test->url = "http://$host$path/test.php?test_id=$test->id&partner_id=$partner->id";
+    $test->url = "http://$host/tests/$test->id/P$partner->id";
   }
   unset($test);
 

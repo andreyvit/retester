@@ -29,7 +29,7 @@
     $test->assign('', array('name', 'design_file', 'finisher_file', 'handler_file', 'sms_enabled'));
     if ($test->is_valid()) {
       $test->put();
-      redirect("test-settings.php?test_id=$test->id", "+Изменения сохранены.");
+      redirect("/admin/tests/$test->id/", "+Изменения сохранены.");
     }
   }
   

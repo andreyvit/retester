@@ -6,7 +6,7 @@
       - if($partner->is_new())
         Регистрация в партнерской программе
     .inner
-      %form{ :method => 'POST', :action => ($partner->is_saved() ? "profile.php" : "signup.php"), :class => 'form' }
+      %form{ :method => 'POST', :action => ($partner->is_saved() ? "/partner/accounts/current/edit" : "/partner/accounts/new"), :class => 'form' }
         .group
           .left
             %label.label.right{ :for=>'email' }

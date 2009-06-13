@@ -8,7 +8,7 @@
     if ($partner->is_valid()) {
       loginkit_update_password_hash($partner);
       $partner->put();
-      redirect("profile.php", "+Ваш аккаунт успешно создан.");
+      redirect("/parner/accounts/current/edit", "+Ваш аккаунт успешно создан.");
     }
   }
 

@@ -18,15 +18,15 @@ if (!isset($_SESSION['tests']) || !isset($_SESSION['tests'][$test_id])) {
 
 $RES =& $_SESSION['tests'][$test_id];
 if (!$test->sms_enabled || empty($RES->sms_resp)) {
-  redirect("test.php?test_id=$test->id");
+  redirect("/tests/$test->id/");
   die();
 }
 
 $resp = $_REQUEST['resp'];
 if (strtoupper($resp) != strtoupper($RES->sms_resp)) {
-  redirect("test.php?test_id=$test->id", "Неверный код, попробуйте еще раз");
+  redirect("/tests/$test->id/", "Неверный код, попробуйте еще раз");
   die();
 }
 
 $RES->sms_password_entered = true;
-redirect("test.php?test_id=$test->id");
+redirect("/tests/$test->id/");

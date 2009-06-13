@@ -89,8 +89,8 @@ function show_carrier_sms_details(carrier_index, carrier) {
 	selected_carrier_index = carrier_index;
 	var phone_data = carrier.phones[0];
 	$.ajax({
-		'url': 'allocate-sms.php',
-		'data': { 'test_id': $('#test_id').val(), 'carrier_id' : carrier.id },
+		'url': '/tests/' + $('#test_id').val() + '/allocate-sms',
+		'data': { 'carrier_id' : carrier.id },
 		'dataType': 'html',
 		'beforeSend': function() { $('#sms_error, #sms_details').hide(); $('#sms_progress').show(); },
 		'success': function(data) { eval(data); },

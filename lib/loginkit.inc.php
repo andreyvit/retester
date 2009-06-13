@@ -4,6 +4,8 @@ if (!defined('LOGINKIT_LAST_USERNAME_COOKIE'))
   define('LOGINKIT_LAST_USERNAME_COOKIE', 'loginkit-last-user-name');
 if (!defined('LOGINKIT_ACCOUNT_DELETED_FLASH'))
   define('LOGINKIT_ACCOUNT_DELETED_FLASH', 'Sorry, your account has been deleted.');
+if (!defined('LOGINKIT_LOGIN_URL'))
+  define('LOGINKIT_LOGIN_URL', 'login.php');
 
 /*
   $user = new User;
@@ -70,9 +72,9 @@ function loginkit_logged_in($user, $tags = array()) {
   $_SESSION['user_tags'] = $tags;
   $GLOBALS['current_user'] =& $user;
 }
-
+              
 function loginkit_redirect_to_login() {
-  redirect('login.php?url=' . urlencode($_SERVER['PHP_SELF']));
+  redirect(LOGINKIT_LOGIN_URL.'?url=' . urlencode($_SERVER['REQUEST_URI']));
 }
 
 function loginkit_current_user_kind() {

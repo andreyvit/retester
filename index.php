@@ -8,7 +8,7 @@ if (isset($_SESSION['tests'])) {
       unset($active_tests[intval($test_id)]);
     else {
       $active_tests[intval($test_id)]->question_no = $v->question_no;
-      $active_tests[intval($test_id)]->url = "test.php?test_id=$test_id";
+      $active_tests[intval($test_id)]->url = "/tests/$test_id/";
     }
   }
 } else {
@@ -17,7 +17,7 @@ if (isset($_SESSION['tests'])) {
 
 $tests = query('Test', "SELECT id, name FROM tests ORDER BY name");
 foreach ($tests as &$test) {
-  $test->url = "test.php?test_id=$test->id";
+  $test->url = "/tests/$test->id/";
 }
 unset($test);
 

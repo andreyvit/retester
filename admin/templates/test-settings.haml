@@ -3,7 +3,7 @@
   .content
     %h2.title Настройки теста
     .inner
-      %form{ :method => 'POST', :action => "test-settings.php?test_id=$test->id", :class => 'form' }
+      %form{ :method => 'POST', :action => "/admin/tests/$test->id/", :class => 'form' }
         .columns
           .column.left
             .group
