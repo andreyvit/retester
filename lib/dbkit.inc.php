@@ -1,5 +1,7 @@
 <?php
 
+// YourSway DBkit: a tiny sane ORM
+
 mysql_connect(REATESTER_DB_HOST, REATESTER_DB_USER, REATESTER_DB_PASSWORD) or
   die("cannot connect to the database");
 mysql_select_db(REATESTER_DB_NAME)

@@ -9,7 +9,7 @@ else
 set_include_path(get_include_path() . PATH_SEPARATOR . SITE_ROOT);
 
 require_once 'config/config.inc.php';
-require_once 'lib/dbconnect.inc.php';
+require_once 'lib/dbkit.inc.php';
 require_once 'lib/models.inc.php';
 require_once 'lib/HamlParser.class.php';
 require_once 'lib/statistics.inc.php';
