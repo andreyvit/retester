@@ -10,7 +10,7 @@ $carrier_id = intval($_GET['carrier_id']);
 if ($carrier_id == 0)
 	die("invalid carrier_id");
   
-$test = get('Test', "WHERE `id` = %d", $test_id);
+$test = Test::get("WHERE `id` = %d", $test_id);
 if (!$test) {
   exit;
 }

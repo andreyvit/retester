@@ -2,13 +2,13 @@
 
 define('IMAGE_UPLOAD_BASE_DIR', '../data/images');
 
-class Test extends Model {
+class Test extends DBkitModel {
   
   var $table_name = 'tests';
   var $id, $name, $design_file, $handler_file, $finisher_file, $sms_enabled;
   
   function delete_children() {
-    $questions = query('Question', "SELECT id FROM questions WHERE test_id = '%s'", $this->id);
+    $questions = Question::query("SELECT id FROM questions WHERE test_id = '%s'", $this->id);
     foreach ($questions as $q)
       $q->delete();
   }
@@ -27,14 +27,14 @@ class Test extends Model {
   
 }
 
-class Question extends Model {
+class Question extends DBkitModel {
   
   var $table_name = 'questions';
   var $id, $test_id, $text, $order, $image_file;
   
   function delete_children() {
-    execute("DELETE FROM answers WHERE question_id = '%s'", $this->id);
-    execute("DELETE FROM questions WHERE id = '%s'", $this->id);
+    dbkit_execute("DELETE FROM answers WHERE question_id = '%s'", $this->id);
+    dbkit_execute("DELETE FROM questions WHERE id = '%s'", $this->id);
   }
   
   function normalize_text($v) {
@@ -62,7 +62,7 @@ class Question extends Model {
   
 }
 
-class Answer extends Model {
+class Answer extends DBkitModel {
   
   var $table_name = 'answers';
   var $id, $question_id, $text, $order, $points, $image_file;
@@ -96,7 +96,7 @@ class Answer extends Model {
 
 }
 
-class Partner extends Model {
+class Partner extends DBkitModel {
   
   var $table_name = "partners";
   var $id, $email, $first_name, $last_name, $middle_name, $phone, $icq, $wmid;
@@ -164,7 +164,7 @@ class Partner extends Model {
   
 }
 
-class DailyStatistics {
+class DailyStatistics extends DBkitModel {
   
   var $table_name = 'daily_statistics';
   
@@ -185,7 +185,7 @@ class QuestionResult {
   // $points
 }
 
-class TestSession extends Model {
+class TestSession extends DBkitModel {
   var $table_name = 'sessions';
   
   var $id;
@@ -194,7 +194,7 @@ class TestSession extends Model {
   var $sms_chal, $sms_resp;
 }
 
-class SMS extends Model {
+class SMS extends DBkitModel {
   var $table_name = 'smses';
   
   var $id, $smsid, $carrier_id, $service_phone, $user_phone, $msg, $suffix, $confidence_rate;

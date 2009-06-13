@@ -15,11 +15,11 @@
         - foreach($daily_stats as $stat)
           %tr
             %td.first= $stat->day
-            %td= $stat->count_starts + $stat->count_free_stats
-            %td= intval(($stat->count_starts + $stat->count_free_stats - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= $stat->count_starts + $stat->count_free_starts
+            %td= intval(($stat->count_starts + $stat->count_free_starts - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
             %td= $stat->count_smses
             %td= $stat->partner_earning
               
@@ -38,10 +38,10 @@
         - foreach($test_stats as $stat)
           %tr
             %td.first= $stat->test_name
-            %td= $stat->count_starts + $stat->count_free_stats
-            %td= intval(($stat->count_starts + $stat->count_free_stats - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
-            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_stats) * 100 + 0.5)."%"
+            %td= $stat->count_starts + $stat->count_free_starts
+            %td= intval(($stat->count_starts + $stat->count_free_starts - $stat->count_finishes - $stat->count_free_finishes) / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval($stat->count_free_finishes / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval(($stat->count_finishes - $stat->count_smses) / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
+            %td= intval($stat->count_smses / ($stat->count_starts + $stat->count_free_starts) * 100 + 0.5)."%"
             %td= $stat->count_smses
             %td= $stat->partner_earning

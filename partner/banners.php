@@ -5,7 +5,7 @@
   
   $partner = loginkit_current_user();
 
-  $tests = query('Test', "SELECT id, name FROM tests ORDER BY name");
+  $tests = Test::query("SELECT id, name FROM tests ORDER BY name");
   $host = $_SERVER['HTTP_HOST'];
   foreach ($tests as &$test) {
     $test->url = "http://$host/tests/$test->id/P$partner->id";

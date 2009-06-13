@@ -5,7 +5,7 @@ $test_id = intval($_GET['test_id']);
 if ($test_id == 0)
   die("invalid test_id");
   
-$test = get('Test', "WHERE `id` = %d", $test_id);
+$test = Test::get("WHERE `id` = %d", $test_id);
 if (!$test) {
   include('templates/test_no_longer_exists.inc.php');
   exit;

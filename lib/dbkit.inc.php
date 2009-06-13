@@ -7,14 +7,17 @@ mysql_connect(REATESTER_DB_HOST, REATESTER_DB_USER, REATESTER_DB_PASSWORD) or
 mysql_select_db(REATESTER_DB_NAME)
   or die("cannot select database");
   
+// private
 function dbkit_classify($name) {
   return preg_replace('/(?:([a-z0-9])_|^)([a-z])/e', '"$1".strtoupper("$2")', $name);
 }
 
+// private
 function dbkit_tableize($name) {
   return strtolower(preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $name));
 }
 
+// private
 function dbkit_collect_attrs($array, $attr) {
   $result = array();
   foreach ($array as $obj)
@@ -22,21 +25,84 @@ function dbkit_collect_attrs($array, $attr) {
   return $result;
 }
 
+// private
+function dbkit_log_query($sql) {
+  $fd = fopen('/tmp/query.log', 'a');
+  fprintf($fd, "$sql\n");
+  fclose($fd);
+}
+
+// private
+// res dbkit_run_query(string sql, mixed arg...)
+function dbkit_run_query($sql) {
+  $args = func_get_args();
+  array_shift($args);
+  return dbkit_run_query_with_array($sql, $args);
+}
+
+function dbkit_run_query_with_array($sql, $args) {
+  foreach($args as &$arg) {
+    if (is_array($arg)) {
+      if (count($arg) == 0) $arg = array(-1);
+      $parts = array();
+      foreach ($arg as $part)
+        $parts[] = mysql_real_escape_string("$part");
+      $arg = "(" . implode(",", $parts) . ")";
+    } else {
+      $arg = mysql_real_escape_string("$arg");
+    }
+  }
+  array_unshift($args, $sql);
+  $sql = call_user_func_array('sprintf', $args);
+  dbkit_log_query($sql);
+  $res = mysql_query($sql);
+  if (!$res) die("database query failed: ".mysql_error());
+  return $res;
+}
+
+// public
+// void dbkit_execute(string sql, mixed arg...)
+function dbkit_execute($sql) {
+  $args = func_get_args();
+  array_shift($args);
+  return dbkit_execute_with_array($sql, $args);
+}
+
+function dbkit_execute_with_array($sql, $args) {
+  dbkit_run_query_with_array($sql, $args);
+  return mysql_affected_rows();
+}
+
+// available natively in PHP 5.3+, replacement from Phuby (http://github.com/shuber/phuby/)
+if (!function_exists('get_called_class')) {
+    function get_called_class() { 
+        $backtrace = debug_backtrace();
+        if (preg_match('/eval\(\)\'d code$/', $backtrace[1]['file'])) {
+          echo '<pre>'; print_r(debug_backtrace());
+            return $backtrace[3]['args'][0];
+        } else {
+            $lines = file($backtrace[1]['file']);
+            preg_match('/([a-zA-Z0-9\_]+)::'.$backtrace[1]['function'].'/', $lines[$backtrace[1]['line']-1], $matches);
+            return $matches[1];
+        }
+    }
+}
 
 //die(implode(", ", array(dbkit_classify("foo"), dbkit_classify("foo_bar"), dbkit_classify("foo2_bar"))));
 //die(implode(", ", array(dbkit_tableize("Foo"), dbkit_tableize("FooBar"), dbkit_tableize("Foo2Bar"))));
   
-class Model {
+class DBkitModel {
   
   var $field_errors;
   
   // public class methods
   
+  // call via descendant, i.e. MyModel::get_from_request('/', 'Sorry, MyModel has been deleted.')
   function get_from_request(
-        $model_name,    /* model class name */
         $fallback_url,  /* redirect here if the request is invalid */
         $deleted_flash_message,  /* flash message when no such object is found, null to prevent redirection */
         $request_param_name = null, $scope_var_name = null, $scope_foreign_key = null) {
+    $model_name = get_called_class();
     if (is_null($request_param_name))
       $request_param_name = strtolower($model_name)."_id";
 
@@ -47,16 +113,16 @@ class Model {
     
     $id = $_REQUEST[$request_param_name];
     if (is_null($scope_var_name)) {
-      $result = get($model_name, "WHERE `id` = '%s'", $id);
+      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = '%s'", $id);
     } else {
       if (is_null($scope_foreign_key))
          $scope_foreign_key = $scope_var_name."_id";
       if (empty($GLOBALS[$scope_var_name]))
-        die("global variable $scope_var_name must be set before the call to Model::get_from_request");
+        die("global variable $scope_var_name must be set before the call to DBkitModel::get_from_request");
       $scope = $GLOBALS[$scope_var_name];
       if (empty($scope->id))
         die("$scope_var_name->id is not defined");
-      $result = get($model_name, "WHERE `id` = '%s' AND `$scope_foreign_key` = '%s'", $id, $scope->id);
+      $result = DBkitModel::get_with_klass($model_name, "WHERE `id` = '%s' AND `$scope_foreign_key` = '%s'", $id, $scope->id);
     }
     
     if (!$result && !is_null($deleted_flash_message)) {
@@ -64,6 +130,92 @@ class Model {
       die();
     }
     return $result;
+  }
+
+  // call via descendant, i.e. MyModel::query("WHERE id='%s'", 12)
+  function query($sql /*, $arg... */) {
+    $args = func_get_args();
+    array_shift($args);
+    return DBkitModel::query_with_klass_and_array(get_called_class(), $sql, $args);
+  }
+  
+  function query_with_klass($klass, $sql /*, $arg... */) {
+    $args = func_get_args();
+    array_shift($args);
+    array_shift($args);
+    return DBkitModel::query_with_klass_and_array($klass, $sql, $args);
+  }
+  
+  function query_with_klass_and_array($klass, $sql, $args) {
+    if (!class_exists($klass))
+      die("query_with_klass_and_array: invalid klass '$klass'");
+    $std_fields = implode(", ", DBkitModel::get_fields_for_select($klass));
+    $vars = get_class_vars($klass);
+    if (!strstr($sql, "SELECT"))
+      $sql = "SELECT ** FROM _T_ $sql";
+    $sql = str_replace('_T_', "{$vars['table_name']}", $sql);
+    $sql = str_replace('**', $std_fields, $sql);
+
+    array_unshift($args, $sql);
+    $r = call_user_func_array('dbkit_run_query', $args);
+    $fields = array();
+    $n = mysql_num_fields($r);
+    for($i = 0; $i < $n; $i++)
+      $fields[] = mysql_field_name($r, $i);
+    $res = array();
+    while($row = mysql_fetch_object($r, $klass)) {
+      $row->_fetched_fields = $fields;
+      if (method_exists($row, 'wakeup'))
+        $row->wakeup();
+      $res[] = $row;
+    }
+    mysql_free_result($r);
+    foreach($res as &$r)
+      $r->dbkit__resultset = $res;
+    return $res;
+  }
+
+  // call via descendant, i.e. MyModel::query_indexed(...)
+  function query_indexed($attr, $sql /*, $arg...*/) {
+    $args = func_get_args();
+    array_shift($args);
+    array_shift($args);
+    return DBkitModel::query_indexed_with_klass_and_array(get_called_class(), $attr, $sql, $args);
+  }
+  
+  function query_indexed_with_klass($klass, $attr, $sql /*, $arg... */) {
+    $args = func_get_args();
+    array_shift($args);
+    array_shift($args);
+    array_shift($args);
+    return DBkitModel::query_indexed_with_klass_and_array($klass, $attr, $sql, $args);
+  }
+  
+  function query_indexed_with_klass_and_array($klass, $attr, $sql, $args) {
+    $array = DBkitModel::query_with_klass_and_array($klass, $sql, $args);
+    return index_by($array, $attr);
+  }
+
+  // call via descendant, i.e. MyModel::get(...)
+  function get($sql /*, $arg... */) {
+    $args = func_get_args();
+    array_shift($args);
+    return DBkitModel::get_with_klass_and_array(get_called_class(), $sql, $args);
+    }
+
+  function get_with_klass($klass, $sql /*, $arg... */) {
+    $args = func_get_args();
+    array_shift($args);
+    array_shift($args);
+    return DBkitModel::get_with_klass_and_array($klass, $sql, $args);
+  }
+
+  function get_with_klass_and_array($klass, $sql, $args) {
+    $rows = DBkitModel::query_with_klass_and_array($klass, $sql, $args);
+    if (count($rows) == 0)
+      return false;
+    else
+      return $rows[0];
   }
   
   // public methods
@@ -119,7 +271,7 @@ class Model {
   
   function delete() {
     if ($this->is_saved()) {
-      execute("DELETE FROM `$this->table_name` WHERE `id` = '%s'", $this->id);
+      dbkit_execute("DELETE FROM `$this->table_name` WHERE `id` = '%s'", $this->id);
       $this->delete_children();
       $this->id = null;
     }
@@ -134,7 +286,8 @@ class Model {
       if (!isset($this->dbkit__resultset))
         $this->$name = get($klass, "WHERE `id`='%s'", $this->$id_name);
       else {
-        $items = query_indexed($klass, 'id', "WHERE `id` IN %s", array_unique(dbkit_collect_attrs($this->dbkit__resultset, $id_name)));
+        $items = DBkitModel::query_indexed_with_klass($klass, "id", "WHERE `id` IN %s",
+            array_unique(dbkit_collect_attrs($this->dbkit__resultset, $id_name)));
         foreach($this->dbkit__resultset as $row)
           $row->$name = $items[$row->$id_name];
       }
@@ -166,7 +319,7 @@ class Model {
   }
   
   function delete_children() {
-    // execute("DELETE FROM child_items WHERE parent_id = '%s'", $this->id);
+    // dbkit_execute("DELETE FROM child_items WHERE parent_id = '%s'", $this->id);
   }
   
   // protected
@@ -216,7 +369,7 @@ class Model {
     }
   }
   
-  // private
+  // private instance methods
   
   function filter_out_special_fields($fields) {
     return array_diff($fields, array("id", "created_at", "updated_at", "table_name", "form_fields", "field_errors"));
@@ -269,8 +422,7 @@ class Model {
     }
     $names = implode(", ", $names);
     $values = implode(", ", $values);
-    array_unshift($args, "INSERT INTO `$this->table_name`($names) VALUES ($values)");
-    call_user_func_array("execute", $args);
+    dbkit_execute_with_array("INSERT INTO `$this->table_name`($names) VALUES ($values)", $args);
     $this->id = mysql_insert_id();
   }
   
@@ -290,92 +442,9 @@ class Model {
     }
     $sets = implode(", ", $sets);
     $args[] = $this->id;
-    array_unshift($args, "UPDATE `$this->table_name` SET $sets WHERE `id`=%d");
-    call_user_func_array("execute", $args);
+    dbkit_execute_with_array("UPDATE `$this->table_name` SET $sets WHERE `id`=%d", $args);
   }
   
-}
-
-function log_query($sql) {
-  $fd = fopen('/tmp/query.log', 'a');
-  fprintf($fd, "$sql\n");
-  fclose($fd);
-}
-
-// res run_query(string sql, mixed arg...)
-function run_query($sql) {
-  $args = func_get_args();
-  array_shift($args);
-  foreach($args as &$arg) {
-    if (is_array($arg)) {
-      if (count($arg) == 0) $arg = array(-1);
-      $parts = array();
-      foreach ($arg as $part)
-        $parts[] = mysql_real_escape_string("$part");
-      $arg = "(" . implode(",", $parts) . ")";
-    } else {
-      $arg = mysql_real_escape_string("$arg");
-    }
-  }
-  array_unshift($args, $sql);
-  $sql = call_user_func_array('sprintf', $args);
-  log_query($sql);
-  $res = mysql_query($sql);
-  if (!$res) die("database query failed: ".mysql_error());
-  return $res;
-}
-
-// void execute(string sql, mixed arg...)
-function execute($sql) {
-  $args = func_get_args();
-  call_user_func_array('run_query', $args);
-  return mysql_affected_rows();
-}
-
-function query($klass, $sql /*, $arg... */) {
-  $std_fields = implode(", ", Model::get_fields_for_select($klass));
-  $vars = get_class_vars($klass);
-  if (!strstr($sql, "SELECT"))
-    $sql = "SELECT ** FROM _T_ $sql";
-  $sql = str_replace('_T_', "{$vars['table_name']}", $sql);
-  $sql = str_replace('**', $std_fields, $sql);
-  
-  $args = func_get_args();
-  array_shift($args);
-  array_shift($args);
-  array_unshift($args, $sql);
-  $r = call_user_func_array('run_query', $args);
-  $fields = array();
-  $n = mysql_num_fields($r);
-  for($i = 0; $i < $n; $i++)
-    $fields[] = mysql_field_name($r, $i);
-  $res = array();
-  while($row = mysql_fetch_object($r, $klass)) {
-    $row->_fetched_fields = $fields;
-    if (method_exists($row, 'wakeup'))
-      $row->wakeup();
-    $res[] = $row;
-  }
-  mysql_free_result($r);
-  foreach($res as &$r)
-    $r->dbkit__resultset = $res;
-  return $res;
-}
-
-function query_indexed($klass, $attr, $sql /*, $arg... */) {
-  $args = func_get_args();
-  array_splice($args, 1, 1);
-  $array = call_user_func_array('query', $args);
-  return index_by($array, $attr);
-}
-
-function get($klass, $sql /*, $arg... */) {
-  $args = func_get_args();
-  $rows = call_user_func_array("query", $args);
-  if (count($rows) == 0)
-    return false;
-  else
-    return $rows[0];
 }
 
 ?>

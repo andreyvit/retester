@@ -9,12 +9,12 @@
       $question = new Question();
       $question->test_id = $_REQUEST['test_id'];
       
-      $v = get('Model', "SELECT MAX(`order`) AS max_order FROM `questions` WHERE `test_id`=%s", $question->test_id);
+      $v = DBkitModel::get("SELECT MAX(`order`) AS max_order FROM `questions` WHERE `test_id`=%s", $question->test_id);
       $max_order = ($v ? $v->max_order : 0);
       $question->order = $max_order + 1;
       $answers = array();
     } else {
-      if (!($question = get('Question', "WHERE id = %s", $id)))
+      if (!($question = Question::get("WHERE id = %s", $id)))
         jsdie('questionNotFound', $id);
     }
     $question->assign('question_', array('text', 'image_code'));
@@ -30,7 +30,7 @@
       }
     }
     
-    $answers_by_id = query_indexed('Answer', 'id', "WHERE question_id=%d", $question->id);
+    $answers_by_id = Answer::query_indexed('id', "WHERE question_id=%d", $question->id);
     $answers = array();
     foreach($answers_data as $aid => $answer_data) {
       $answer = $answers_by_id[intval($aid)];
@@ -67,10 +67,10 @@
     $question->wakeup();
     $answers = array();
   } else {
-    if (!($question = get('Question', "WHERE id = %s", $id)))
+    if (!($question = Question::get("WHERE id = %s", $id)))
       redirect("/", "Извините, этот вопрос уже удален.");
     $title = "$question->text";
-    $answers = query('Answer', "WHERE question_id = %s ORDER BY `order`", $question->id);
+    $answers = Answer::query("WHERE question_id = %s ORDER BY `order`", $question->id);
   }
   $max_answer_order = 0;
   foreach ($answers as $answer)
