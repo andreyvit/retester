@@ -29,4 +29,4 @@ RewriteRule  ^partner/accounts/login/$                          partner/login.ph
 RewriteRule  ^partner/statistics/$                              partner/statistics.php                                [QSA]
 RewriteRule  ^partner/banners/$                                 partner/banners.php                                   [QSA]
 
-                                                                                                                  
+RewriteRule  ^setup-rewrite-check/$                            setup.php?rewritecheck=1
