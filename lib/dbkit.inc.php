@@ -397,6 +397,10 @@ class DBkitModel {
   }
   
   // static
+  function is_date_field($field) {
+    return in_array(substr($field, strlen($field)-3), array('_on', '_at'));
+  }
+  
   function get_fields_for_select($klass) {
     $fields = array_keys(get_class_vars($klass));
     foreach($fields as &$field)
@@ -405,7 +409,7 @@ class DBkitModel {
     $fields = array_filter($fields);
     $fields = array_diff($fields, array("table_name", "form_fields", "field_errors"));
     foreach ($fields as &$field)
-      if (in_array(substr($field, strlen($field)-3), array('_on', '_at')))
+      if (DBkitModel::is_date_field($field))
         $field = "UNIX_TIMESTAMP(`$field`) AS `$field`";
       else
         $field = "`$field`";
@@ -419,7 +423,10 @@ class DBkitModel {
     foreach($fields as $field) {
       $names[] = "`$field`";
       $values[] = "?";
-      $args[] = $this->$field;
+      $value = $this->$field;
+      if (DBkitModel::is_date_field($field) && is_numeric($value))
+        $value = strftime('%Y%m%d%H%M%S', $value);
+      $args[] = $value;
     }
     $names = implode(", ", $names);
     $values = implode(", ", $values);
