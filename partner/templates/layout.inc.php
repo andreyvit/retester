@@ -36,7 +36,7 @@ function tab($name) {
           <li class="<?=tab('profile')?>"><a href="/partner/accounts/current/edit">Профиль</a></li>
           <li class="<?=tab('banners')?>"><a href="/partner/banners/">Баннеры</a></li>
           <li class="<?=tab('statistics')?>"><a href="/partner/statistics/">Статистика</a></li>
-          <li class="<?=tab('questions')?>"><a href="/partner/payments/">Выплаты</a></li>
+          <li class="<?=tab('payments')?>"><a href="/partner/payments/">Выплаты</a></li>
           <? if($_REQUEST['test_id']): ?>
           <? endif; ?>
         </ul>

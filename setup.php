@@ -329,15 +329,15 @@ create table smses (
   status int not null default 0
 );
 
-create table transfers (
+create table payments (
   id int not null auto_increment primary key,
+  transferred_at datetime not null,
+  created_at timestamp not null default current_timestamp,
   partner_id int not null,
-  created_at datetime not null,
-  created_by varchar(20) not null,
-  deleted_at datetime null,
-  deleted_by varchar(20) null,
-  amount decimal(12,4) not null
+  amount decimal(12,4) not null,
+  previous_period_balance decimal(12,4) not null
 );
+
 EOT;
 
 if (!isset($_REQUEST['done'])) {
@@ -355,11 +355,7 @@ if (!isset($_REQUEST['done']) && $testdata) {
   include 'lib/models.inc.php';
   include 'lib/loginkit.inc.php';
   include 'lib/statistics.inc.php';
-  function random_string($l, $c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", $u = true) { 
-   if (!$u) for ($s = '', $i = 0, $z = strlen($c)-1; $i < $l; $x = rand(0,$z), $s .= $c{$x}, $i++); 
-   else for ($i = 0, $z = strlen($c)-1, $s = $c{rand(0,$z)}, $i = 1; $i != $l; $x = rand(0,$z), $s .= $c{$x}, $s = ($s{$i} == $s{$i-1} ? substr($s,0,-1) : $s), $i=strlen($s)); 
-   return $s; 
-  }
+  include 'lib/utilities.inc.php';
   
   function add_test($name) {
     $test = new Test;
@@ -424,6 +420,7 @@ if (!isset($_REQUEST['done']) && $testdata) {
   $percent_sessions = array(10, 50, 5, 35); // unfinished, finished-nosms, finished-sms-nocode, finished
   $time_range = 90; // days
   $session_count = 1000;
+  $payment_count = floor($time_range / 7) * count($all_partners);
   
   for($i = 1; $i < count($percent_sessions); $i++) $percent_sessions[$i] += $percent_sessions[$i-1];
   
@@ -447,13 +444,13 @@ if (!isset($_REQUEST['done']) && $testdata) {
     
     for ($q = 0; $q < $count_questions; $q++) {
       $question = $test->all_questions[$i];
-      $answer = $question->answers[rand(0, count($question->answers) - 1)];
+      $answer = $question->all_answers[rand(0, count($question->all_answers) - 1)];
       stat_question_answered($session_id, $test->id, $partner_id, $day, $question->id, $answer->id, $test->all_questions[$i+1]->id, $test->sms_enabled);
     }
       
     if ($r > $percent_sessions[0]) {
       $question = $test->all_questions[count($test->all_questions) - 1];
-      $answer = $question->answers[rand(0, count($question->answers) - 1)];
+      $answer = $question->all_answers[rand(0, count($question->all_answers) - 1)];
       
       stat_test_finished($session_id, $test->id, $partner_id, $day, $question->id, $answer->id, $test->sms_enabled, random_string(REATESTER_SMS_CHAL_LENGTH), random_string(REATESTER_SMS_RESP_LENGTH));
       
@@ -461,6 +458,54 @@ if (!isset($_REQUEST['done']) && $testdata) {
         stat_sms_received($session_id, $test->id, $partner_id, $day, $test->sms_enabled, 300, 200);
       }
     }
+  }
+  
+  $daily_statistics_by_partner = group_by(DailyStatistics::query("ORDER BY day"), "partner_id");
+  
+  $payment_dates = array();
+  for($i = 0; $i < $payment_count; $i++) $payment_dates[] = time() - rand(0, 60*60*24*$time_range);
+  sort($payment_dates);
+  
+  $partner_last_payment = array();
+  $partner_last_stat_index = array();
+  for($i = 0; $i < count($all_partners); $i++) { $partner_last_payment[] = null; $partner_last_stat_index[$i] = 0; }
+  
+  for($i = 0; $i < $payment_count; $i++) {
+    $payment = new Payment;
+    $payment->transferred_at = $payment_dates[$i];
+    $payment->partner_id = $all_partners[rand(0, count($all_partners)-1)]->id;
+    
+    $last_payment = $partner_last_payment[$payment->partner_id];
+    
+    $cutoff = end_of_last_finished_period_before($payment->transferred_at);
+    
+    $balance = 0.0;
+    $daily_statistics = $daily_statistics_by_partner[$payment->partner_id];
+    for($k = $partner_last_stat_index[$payment->partner_id]; $k < count($daily_statistics); $k++) {
+      // echo("day: " . gettype($daily_statistics[$k]) . $k. ", count " . count($daily_statistics) . "<br>\n");
+      $tm = strptime($daily_statistics[$k]->day, '%Y-%m-%d');
+      $date = mktime(0, 0, 0, $tm['mon'], $tm['mday'], $tm['year']);
+      if (!is_null($last_payment) && $date <= end_of_last_finished_period_before($last_payment->transferred_at))
+        die("internal error 345678732: statistics for day " . $daily_statistics[$k]->day);
+      if ($date > $cutoff)
+        break;
+      $balance += $daily_statistics[$k]->partner_earning;
+    }
+    $partner_last_stat_index[$payment->partner_id] = $k;
+    
+    if (!is_null($last_payment))
+      $balance = $balance + $last_payment->previous_period_balance - $last_payment->amount;
+    
+    $payment->previous_period_balance = $balance;
+    $payment->amount = min(20000, rand(floor($balance/2000), floor($balance/1000))*1000);
+    
+    if ($payment->amount < -0.00001)
+      die("internal error 9087654345");
+    if ($payment->amount < 1.00001)
+      continue;
+    
+    $payment->put();
+    $partner_last_payment[$payment->partner_id] = $payment;
   }
   
 

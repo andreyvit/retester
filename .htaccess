@@ -28,5 +28,6 @@ RewriteRule  ^partner/accounts/logout/$                         partner/logout.p
 RewriteRule  ^partner/accounts/login/$                          partner/login.php                                     [QSA]
 RewriteRule  ^partner/statistics/$                              partner/statistics.php                                [QSA]
 RewriteRule  ^partner/banners/$                                 partner/banners.php                                   [QSA]
+RewriteRule  ^partner/payments/$                                partner/payments-list.php                             [QSA]
 
 RewriteRule  ^setup-rewrite-check/$                            setup.php?rewritecheck=1

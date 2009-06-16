@@ -1,0 +1,18 @@
+.block
+  .content
+    %h2.title История выплат
+    .inner
+      %table.table
+        %tr
+          %th Дата
+          %th За период по
+          %th Входящий баланс
+          %th Выплата
+          %th Исходящий баланс
+        - foreach($payments as $payment)
+          %tr
+            %td= strftime("%d %b %Y", $payment->transferred_at)
+            %td= strftime("%d %b %Y", end_of_last_finished_period_before($payment->transferred_at))
+            %td= sprintf("%0.2f", $payment->previous_period_balance)
+            %td= sprintf("%0.2f", $payment->amount)
+            %td= sprintf("%0.2f", $payment->previous_period_balance - $payment->amount)

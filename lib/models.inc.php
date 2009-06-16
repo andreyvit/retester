@@ -202,6 +202,11 @@ class SMS extends DBkitModel {
   var $status;
 }
 
+class Payment extends DBkitModel {
+  var $table_name = 'payments';
+  var $id, $transferred_at, $created_at, $partner_id, $amount, $previous_period_balance;
+}
+
 define('SMS_STATUS_PROCESSING', 0);
 define('SMS_STATUS_OK', 1);
 define('SMS_STATUS_INVALID_SUFFIX_FORMAT', 10);
