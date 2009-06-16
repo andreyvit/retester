@@ -14,6 +14,7 @@ require_once 'lib/models.inc.php';
 require_once 'lib/HamlParser.class.php';
 require_once 'lib/statistics.inc.php';
 
+ini_set('session.gc_maxlifetime', 60*60*24); // expire sessions after 1 day of inactivity
 session_start();
 require_once 'lib/render.inc.php';
 require_once 'lib/loginkit.inc.php';
